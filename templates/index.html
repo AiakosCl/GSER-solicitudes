@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block contenido %}
+<section class="mt-2" id="contenido">
+    {% include "includes/preloader.html" %}
+
+    <div class="section properties">
+
+        <div class="container">
+            <h1 class="text-center py-5"><i class="fa-solid fa-hotel"></i> Nuestros Servicios</h1>
+            <ul class="properties-filter">
+                <li>
+                    <a class="is_active" href="#!" data-filter="*">Mostrar todo</a>
+                </li>
+                <li>
+                    <a href="#!" data-filter=".depto">Alimentación</a>
+                </li>
+                <li>
+                    <a href="#!" data-filter=".casa">Hotelería</a>
+                </li>
+                <li>
+                    <a href="#!" data-filter=".parc">Mantención</a>
+                </li>
+                <li>
+                    <a href="#!" data-filter=".parc">Transporte</a>
+                </li>
+            </ul>
+            <h2>{% include "includes/mensajes.html" %}</h2>
+
+            <div class="properties-box">
+                {% for inmueble in inmuebles %}
+                <div
+                    class="col-12 col-lg-4 col-md-6 align-self-center mb-30 properties-items col-md-6 {% if inmueble.tipo_inmueble == 'casa' %}casa{% elif inmueble.tipo_inmueble == 'departamento' %}depto{% else %}parc{% endif %}">
+                    <div class="item">
+                        <div class="image-container">
+                            <a href="{% url 'VistaAviso' inmueble.id_publicacion %}" class="card-trigger">
+                                <img src="{% if inmueble.imagen %}{{ inmueble.imagen.url }}{% else %}{% static 'images/cabecera2.jpg' %}{% endif %}" alt="" class="circular-images">
+                            </a>
+                        </div>
+                        <span class="category">{{ inmueble.tipo_inmueble|title }}</span>
+                        <h6 class="price">$ {{ inmueble.precio|floatformat:'-3g'}}</h6>
+                        <h6>{{ inmueble.comuna }}</h6>
+                        <h4><a href="#!">{{inmueble.nombre}}</a></h4>
+                        <ul>
+                            <li><i class="fa-solid fa-bed"></i> <span>{{inmueble.habitaciones}}</span></li>
+                            <li><i class="fa-solid fa-toilet"></i> <span>{{inmueble.banos}}</span></li>
+                            <li><i class="fa-solid fa-ruler-horizontal"></i> <span>{{inmueble.m2_construidos}} m&sup2; / {% if inmueble.m2_totales %}{{inmueble.m2_totales}} m&sup2;{% else %}0{% endif %}</span></li>
+                            <li><i class="fa-solid fa-car-side"></i> <span>{{inmueble.estacionamientos}}</span></li>
+                            <li><span><i class="fa-regular fa-eye"></i><span> {{inmueble.visitas|floatformat:'-3g'}} vistas</span></li>
+                        </ul>
+                        <div class="main-button">
+                            <a href="{% url 'VistaAviso' inmueble.id_publicacion %}#presentacion">Agenda una visita</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <h2 class="text-center" style="width: 100%;"><i class="fa-solid fa-heart-crack"></i> Ups! No encuentro
+                    lo que buscas</h2>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}

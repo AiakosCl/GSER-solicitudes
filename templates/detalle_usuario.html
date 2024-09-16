@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contenido %}
+<section id="usuarios">
+    <div class="border border-info-subtle rounded-3" style="max-width: 100%;">
+        <h2>Ficha de usuario</h2>
+        <div id="table-responsive" style="max-width:100%;max-height: 700px;overflow-y: auto;">
+            <table class="table table-sm align-middle" style="max-width: 100%;">
+                <thead>
+                    <tr>
+                        <th>tipo</th>
+                        <th>Nombre de usuario</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Staff</th>
+                        <th>Activo</th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {% if usuario.is_staff %}
+                            <i class="fa-solid fa-user-tie fs-1"></i><br>
+                            <span class="form_span">Administrador</span>
+                            {% elif usuario.tipo_usuario == 1 %}
+                            <i class="fa-solid fa-users fs-1"></i><br>
+                            <span class="form_span">Aprobador</span>
+                            {% else %}
+                            <i class="fa-solid fa-user fs-1"></i><br>
+                            <span class="form_span">Solicitante</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ usuario.username }}</td>
+                        <td>{{ usuario.first_name }}</td>
+                        <td>{{ usuario.last_name }}</td>
+                        <td>
+                            {% if usuario.is_staff %}
+                            <p class="fs-3 text-center"><i class="fa-regular fa-circle-check"></i></p>
+                            {% else %}
+                            <p class="fs-3 text-center"><i class="fa-regular fa-circle-xmark"></i></p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if usuario.is_active %}
+                            <p class="fs-3 text-center"><i class="fa-regular fa-circle-check"></i></p>
+                            {% else %}
+                            <p class="fs-3 text-center"><i class="fa-regular fa-circle-xmark"></i></p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'EditarUsuario' usuario.id %}#usuarios"><i class="fa-solid fa-pen-to-square fs-3"></i></a>
+                            <a href="{% url 'EliminarUsuario' usuario.id %}#usuarios"><i class="fa-solid fa-trash-can fs-3"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a href="{% url 'NuevoUsuario' %}"><button type="button" class="btn btn-outline-dark btn-lg m-2">Nuevo Usuario</button></a>
+    </div>
+</section>
+{% endblock %}

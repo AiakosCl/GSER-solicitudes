@@ -1,0 +1,252 @@
+html {
+    scroll-behavior: smooth;
+
+}
+
+.fab {
+    color: white;
+}
+
+.form_error {
+    font-size: smaller;
+    color: rgb(241, 146, 4);
+}
+
+.form_span {
+    font-size: x-small;
+    color: #06bb66;
+}
+
+/* Navbar transparente cuando está dentro del header */
+.navbar {
+    background-color: transparent;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.navbar a {
+    color: white;
+    /* Color blanco cuando el navbar es transparente */
+}
+
+.navbar .btn-outline-dark {
+    color: white;
+    border-color: white;
+}
+
+/* Navbar sólido cuando sale del header */
+.navbar.outside-header, .dropdown-menu.outside-header {
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Fondo opaco */
+}
+
+.navbar.outside-header .btn-outline-dark {
+    color: darkgray;
+    border-color: darkgray;
+}
+
+.nav-list {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin-right: 20px;
+}
+
+/* .nav-item .menu:hover {
+    color: #f35525 !important;
+} */
+
+.nav-link:hover {
+    color: #f35525 !important;
+}
+
+.nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+}
+
+.nav-link i {
+    font-size: 2rem;
+}
+
+.nav-link span {
+    font-size: 14px;
+}
+
+.dropdown-menu{
+    background-color: rgba(255,255,255,0.3);
+}
+
+#Cabecera {
+    position: relative;
+}
+
+/* Asegurarse de que las imágenes mantengan su proporción */
+.carousel-item img {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    /* Las imágenes mantienen su proporción */
+}
+
+
+.carousel {
+    position: relative;
+    z-index: 1;
+}
+
+.overlay {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    z-index: 2;
+    text-align: left;
+    width: 80%;
+    max-width: 800px;
+    /* Ajusta este valor según tus necesidades */
+}
+
+.overlay img {
+    width: 200px;
+    /* Ajusta el tamaño del logo según tus necesidades */
+}
+
+.overlay h1 {
+    color: white;
+    /* Ajusta el color del texto según tus necesidades */
+    font-size: 24px;
+    /* Ajusta el tamaño del texto según tus necesidades */
+}
+
+#Cabecera h2,
+h3 {
+    color: white;
+}
+
+.circular-images {
+    border-radius: 50%;
+    overflow: hidden;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.properties-items .item .circular-images {
+    border-radius: 50%;
+    overflow: hidden;
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+}
+
+.properties-items .item img {
+    transition: transform 0.3s ease;
+}
+
+.properties-items .item:hover img {
+    transform: scale(1.1);
+}
+
+.properties-items .item .image-container {
+    position: relative;
+}
+
+.properties-items .item .price {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #f35525;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.item .price {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #f35525;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.item .image-container {
+    width: 100%;
+    height: 300px;
+    /* Ajusta la altura según tus necesidades */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.item .image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.modal-title {
+    color: lightgray;
+}
+
+.modal-footer button.aceptar {
+    background-color: #06bb66;
+}
+
+.modal-footer button.cancelar {
+    background-color: #f35525;
+}
+
+.modal-content {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: lightgray;
+}
+
+.messages {
+    list-style-type: none;
+    padding: 0;
+    max-width: 1280px;
+}
+
+.messages .debug {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.messages .info {
+    background-color: #d9edf7;
+    color: #31708f;
+}
+
+.messages .success {
+    background-color: #a8fa87;
+    color: #2e5a2f;
+}
+
+.messages .warning {
+    background-color: #fcf8e3;
+    color: #8a6d3b;
+}
+
+.messages .error {
+    background-color: #f2dede;
+    color: #a94442;
+}
+
+.connected {
+    color:#f35525;
+}
