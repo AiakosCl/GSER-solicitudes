@@ -32,4 +32,4 @@ urlpatterns = [
     path('usuarios/', lista_usuarios, name="ListaUsuarios" ),
     path('filtrousuarios/', filtrarUsuarios, name='FiltroUsuarios'),
 
-] + static(settings.MEDIA_URL, documento_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

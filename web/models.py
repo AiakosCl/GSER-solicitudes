@@ -16,6 +16,10 @@ class Gerencia(models.Model):
 class Perfiles(models.Model):
     nombre_perfil = models.CharField(max_length=10, null=False, blank=False)
 
+    class Meta:
+        verbose_name = "Perfiles"
+        verbose_name_plural = "Perfiles"
+
     def __str__(self) -> str:
         return self.nombre_perfil
 
@@ -32,6 +36,9 @@ class MAE(models.Model):
     telefono = models.CharField(max_length=12, null=True, blank=True)
     correo = models.CharField(max_length=50, blank=False, null=False)
 
+    class Meta:
+        verbose_name = "MAE"
+        verbose_name_plural = "MAE"
     def __str__(self) -> str:
         return f'[{self.ceco_id}] - {self.nombre} - {self.cargo}'
 
@@ -83,6 +90,7 @@ class Habitacion(models.Model):
 class AreaServicio(models.Model):
     nombre_area = models.CharField(max_length=50, unique=True, blank=False, null=False)
     imagen = models.ImageField(upload_to='servicios', null=True, blank=True)
+    descripcion = models.TextField(blank=False, null=False, default="Sin info")
     administrador = models.EmailField(blank=False, null=False)
 
 
@@ -98,6 +106,9 @@ class Servicios(models.Model):
     autorizacion = models.BooleanField(default=False, blank=False, null=False)
     aprobador = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'tipo_usuario': 2})  # Solo los aprobadores pueden aparecer aquí
 
+    class Meta:
+        verbose_name = "Servicios"
+        verbose_name_plural = "Servicios"
     def __str__(self):
         return f'[{self.nombre_servicio}] - {self.area_servicio} - {self.autorizacion}'
     
@@ -187,6 +198,9 @@ class Lockers(models.Model):
     lugar_trabajo = models.CharField(max_length=20, choices=LUGAR_TRABAJO, null=False, blank=False)
     casacambio= models.ForeignKey(SalasCambio, on_delete=models.CASCADE, null=False, blank=False)
 
+    class Meta:
+        verbose_name = "Locker"
+        verbose_name_plural = "Lockers"
     def __str__(self):
         return f'[{self.nombre_locker}] - Casa de Cambio: {self.casacambio} - Usuario: {self.usuario_locker}'
     def save(self, *args, **kwargs):

@@ -23,8 +23,8 @@ class Logout(LogoutView):
 # -- Funciones auxiliares -- #
 
 def index(request):
-
-    return render(request, 'index.html', {})
+    areas_servicios = AreaServicio.objects.all()
+    return render(request, 'index.html', {'areas': areas_servicios})
 
 
 

@@ -17,6 +17,20 @@ html {
     color: #06bb66;
 }
 
+.card-3d {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.card-3d:hover {
+    transform: translateY(-10px); /* Desplaza la card hacia arriba al pasar el ratón */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 12px 40px rgba(0, 0, 0, 0.2); /* Sombra más intensa */
+}
+
+
 /* Navbar transparente cuando está dentro del header */
 .navbar {
     background-color: transparent;
