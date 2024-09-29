@@ -38,7 +38,7 @@
             <div class="properties-box">
                 {% for areaservicio in areas %}
                 <div
-                    class="card-3d col-12 col-lg-4 col-md-6 align-self-center mb-30 properties-items col-md-6 {% if areaservicio.id == 1 %}alm{% elif areaservicio.id == 2 %}hot{% elif areaservicio.id == 3 %}man{% elif areaservicio.id == 4 %}lav{% elif areaservicio.id == 5 %}tra{% else %}otr{% endif %}">
+                    class="card-3d properties-items col-12 col-lg-4 col-md-6 mb-30 {% if areaservicio.id == 1 %}alm{% elif areaservicio.id == 2 %}hot{% elif areaservicio.id == 3 %}man{% elif areaservicio.id == 4 %}lav{% elif areaservicio.id == 5 %}tra{% else %}otr{% endif %}">
                     <div class="item">
                         <div class="image-container">
                             <a href="#" class="card-trigger">
@@ -48,7 +48,7 @@
                         <span class="price">{{ areaservicio.nombre_area|title }}</span>
                         <!-- <h6 class="price">$ {{ inmueble.precio|floatformat:'-3g'}}</h6> -->
                         <h6>{{ inmueble.comuna }}</h6>
-                        <div ><a href="#!" class="form_error">{{areaservicio.descripcion}}</a></div>
+                        <div class="descripcion"><a href="#!" class="form_error">{{areaservicio.descripcion}}</a></div>
                         <!-- <ul>
                             <li><i class="fa-solid fa-bed"></i> <span>{{inmueble.habitaciones}}</span></li>
                             <li><i class="fa-solid fa-toilet"></i> <span>{{inmueble.banos}}</span></li>
