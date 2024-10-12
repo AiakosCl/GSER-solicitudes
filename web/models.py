@@ -111,7 +111,12 @@ class Servicios(models.Model):
         verbose_name_plural = "Servicios"
     def __str__(self):
         return f'[{self.nombre_servicio}] - {self.area_servicio} - {self.autorizacion}'
-    
+
+class TareasMantencion(models.Model):
+    nombre_tarea = models.CharField(max_length=50, unique=True, null=False, blank=False)
+    desripcion_tarea = models.TextField(blank=False)
+    timing = models.PositiveBigIntegerField(default=0)
+
 class Solicitud(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
@@ -201,8 +206,10 @@ class Lockers(models.Model):
     class Meta:
         verbose_name = "Locker"
         verbose_name_plural = "Lockers"
+    
     def __str__(self):
         return f'[{self.nombre_locker}] - Casa de Cambio: {self.casacambio} - Usuario: {self.usuario_locker}'
+    
     def save(self, *args, **kwargs):
         # Generar el nombre del locker a partir del nombre de la sala de cambio y el número de locker
         if not self.nombre_locker:  # Si el nombre no ha sido asignado manualmente

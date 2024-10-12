@@ -160,3 +160,10 @@ def filtrarUsuarios(request):
     
     return render(request, 'lista_usuarios.html',{'lista':usuarios})
 
+@login_required
+def ticket_lavanderia(request):
+    pass
+
+@login_required
+def asignar_locker(request):
+    pass

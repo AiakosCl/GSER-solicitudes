@@ -128,7 +128,8 @@ h3 {
 .properties-box {
     display: flex;
     flex-wrap:wrap;
-    justify-content:space-around;
+    margin: 0px 0px 0px 0px;
+    justify-content:space-between;
     align-content: space-between;
     align-items: center;
     min-height: 100vh;
