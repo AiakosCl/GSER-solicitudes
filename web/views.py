@@ -165,7 +165,7 @@ def filtrarUsuarios(request):
 
 @login_required
 def lista_servicios(request, area_servicio_id):
-    disponibles = Servicios.objects.filter(area_servicio = area_servicio_id)
+    disponibles = Servicio.objects.filter(area_servicio = area_servicio_id)
     return render(request, 'lista_servicios.html', {'lista':disponibles})
 
 @login_required
@@ -174,7 +174,7 @@ def ver_solicitudes_lavanderia(request): #Mejorar la opciones de vista
 
 @login_required
 def ticket_lavanderia(request):
-    prendas = Servicios.objects.filter(area_servicio = 4)
+    prendas = Servicio.objects.filter(area_servicio = 4)
     
     try:
         locker_asignado = Lockers.objects.get(usuario_locker=request.user)
@@ -225,7 +225,7 @@ def asignar_locker(request):
 
 @login_required
 def agregar_al_carrito(request, producto_id):
-    producto = get_object_or_404(Servicios, id_producto = producto_id)
+    producto = get_object_or_404(Servicio, id_producto = producto_id)
     carrito, created = Carrito.objects.get_or_create(usuario = request.user)
     elemento, created = ItemsCarrito.objects.get_or_create(carrito=carrito, producto=producto)
 
