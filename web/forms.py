@@ -96,3 +96,6 @@ class NuevoUsuarioForm(UserCreationForm):
 #         if commit:
 #             user.save()
 #         return user
+
+class TicketLavanderiaForm(forms.ModelForm): #Revisar el formulario para continuar.
+    pass

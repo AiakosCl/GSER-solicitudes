@@ -31,5 +31,16 @@ urlpatterns = [
     path('ficha/<int:usuario_id>/', vista_ficha, name='Ficha'),
     path('usuarios/', lista_usuarios, name="ListaUsuarios" ),
     path('filtrousuarios/', filtrarUsuarios, name='FiltroUsuarios'),
-
+    path('solicitudes_lavanderia/', ver_solicitudes_lavanderia, name='ver_solicitudes_lavanderia'),
+    path('ticket_lavanderia/', ticket_lavanderia, name='ticket_lavanderia'),
+    path('locker_usuario/', asignar_locker, name='asignar_locker'),
+    path('servicios_disponibles/<int:area_servicio>/', lista_servicios, name='lista_servicios'),
+    path('carrito/agregar/<uuid:producto_id>/', agregar_al_carrito, name='agregar_al_carrito'),
+    path('carrito/', ver_carrito, name='ver_carrito'),
+    path('pedido/', realizar_pedido, name='realizar_pedido'),
+    path('vaciar/', vaciar_carrito, name='vacia_carrito'),
+    path('carrito/eliminar/<int:elemento_id>/', eliminar_item_carrito, name='eliminar_linea'),
+    path('carrito/aumentar/<int:elemento_id>/', aumentar_item, name='aumentar_item'),
+    path('carrito/disminuir/<int:elemento_id>/', disminuir_item, name='disminuir_item'),
+    path('historial-pedidos/', historial, name='historial')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
