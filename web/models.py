@@ -16,7 +16,7 @@ class Gerencia(models.Model):
     def __str__(self) -> str:
         return f'[{self.descripcion}] - {self.ceco} - {self.aprobador}'
 
-class AreaAccionMantencion(models.Model):
+class Especialidad(models.Model):
     especialidad = models.CharField(max_length=50, unique=True, null=False, blank=False)
 
     def __str__(self) -> str:
@@ -74,7 +74,7 @@ class Tecnico(models.Model):
     nombre = models.CharField(max_length=70, blank=False, null=False)
     telefono = models.CharField(max_length=12, null=True, blank=True)
     correo = models.CharField(max_length=50, blank=False, null=False)
-    especialidad = models.ForeignKey(AreaAccionMantencion, on_delete=models.CASCADE)
+    especialidad = models.ForeignKey(Especialidad, on_delete=models.CASCADE)
     estado = models.BooleanField(default=True)
 
     class Meta:
@@ -94,7 +94,8 @@ class Area(models.Model):
 class Edificio(models.Model):
     TIPO_EDIFICIO = (
         ('Hotel', 'Hotel'), 
-        ('Mina_Rajo', 'Mina_Rajo'),
+        ('nodo 3500', 'Nodo 3500'),
+        ('nodo 3700', 'Nodo 3700'),
         ('Taller', 'Taller'),
         ('Otros', 'Otros'))
     nombre_edificio = models.CharField(max_length=50, unique=True, null=False, blank=False)
@@ -105,8 +106,19 @@ class Edificio(models.Model):
         return f'[{self.nombre_edificio}] - Area: {self.area}'
     
 class Habitacion(models.Model):
-    nombre_habitacion = models.CharField(max_length=50, unique=True, null=False, blank=False)
+    TIPO_HABITACION = (
+        ("dormitorio", "Dormitorio"),
+        ("comedor", "Comedor"),
+        ("oficina", "Oficina"),
+        ("baño", "Baño"),
+        ("sala de cambio", "Sala de Cambio"),
+        ("sala de reuniones", "Sala de Reuniones"),
+        ("otro", "Otro"),
+    )
     edificio = models.ForeignKey(Edificio, on_delete=models.CASCADE)
+    nombre_habitacion = models.CharField(max_length=50, unique=True, null=False, blank=False)
+    tipo_habitacion = models.CharField(max_length=50, choices=TIPO_HABITACION, null=False, blank=False)
+
 
     def __str__(self):
         return f'[{self.nombre_habitacion}] - Edificio: {self.edificio}'
@@ -184,7 +196,7 @@ class Servicio(models.Model):
 
 class TareasMantencion(models.Model):
     nombre_tarea = models.CharField(max_length=50, unique=True, null=False, blank=False)
-    area_accion = models.ForeignKey(AreaAccionMantencion, on_delete=models.CASCADE)
+    area_accion = models.ForeignKey(Especialidad, on_delete=models.CASCADE)
     descripcion_tarea = models.TextField(blank=False)
     timing = models.PositiveBigIntegerField(default=0)
 
@@ -208,15 +220,24 @@ class Valoracion(models.Model):
         return f'Valoración de {self.usuario.username} para la Solicitud #{self.solicitud.id}'
 
 
-# ---- Trabajo con Contacto ---- #
+# ---- Trabajo con Contacto / reclamo / sugerencias, etc ---- #
 class Contactos(models.Model):
+    TIPO_CONTACTO = (
+        ('consulta', 'Consulta'),
+        ('felicitacion', 'Felicitación'),
+        ('sugerencia', 'Sugerencia'),
+        ('reclamo', 'Reclamo'),
+        ('otro', 'Otro'),
+    )
     ContactoId = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    NombreCliente= models.CharField(max_length=64, blank=False, null=True)
-    EmailCliente = models.EmailField(max_length=50, blank=False, null=True)
-    Mensaje = models.TextField(blank=False)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    tipo_contacto = models.CharField(max_length=20, choices=TIPO_CONTACTO, null=False, blank=False)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    EmailCliente = models.EmailField(max_length=50, blank=False, null=False)
+    Mensaje = models.TextField(null=False, blank=False)
 
     def __str__(self) -> str:
-        return self.NombreCliente
+        return f"{self.tipo_contacto} - {self.EmailCliente} - {self.fecha_creacion}"
 
 
 # ---- Trabajo Solicitudes, carritos y otros ---- #
@@ -234,6 +255,7 @@ class SolicitudBase(models.Model): #Para Registro de Solicitudes de sobrecupo ma
     fecha_cierre = models.DateTimeField(null=True, blank=True)
     area_servicio = models.ForeignKey(AreaServicio, on_delete=models.CASCADE)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    ceco = models.ForeignKey(Gerencia, on_delete=models.CASCADE)
     estado = models.CharField(max_length=15, choices=ESTADO_SOLICITUD, default='pendiente')
 
     class Meta:
@@ -263,9 +285,7 @@ class ItemsCarrito(models.Model):
     def __str__(self) -> str:
         return f'{self.cantidad} x {self.producto.nombre_servicio}'
 
-class Pedido(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    fecha_pedido = models.DateTimeField(auto_now_add=True)
+class Pedido(SolicitudBase):
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self) -> str:
@@ -296,9 +316,23 @@ class OT(SolicitudBase): #Para registro de OT Mantención
     def __str__(self) -> str:
         return f'OT {self.id} - {self.edificio} - {self.habitacion} - {self.tarea_mantencion} - {self.tecnico_asignado.nombre}'
 
-
 class Alojamiento(SolicitudBase): #Para registro de Solicitud de Alojamiento
-    pass
+    MOTIVOS_ALOJAMIENTO = (
+        ('parada de planta', 'Parada de Planta'),
+        ('encierro', 'Encierro Programado'),
+        ('contingencias', 'Contingencias'),
+        ('permanente', 'Permanente'),
+        ('Alojamiento por contrato', 'Alojamiento por Contrato'),
+        ('visita', 'Visita'),
+    )
+    
+    check_in = models.DateField()
+    check_out = models.DateField()
+    tipo_alojamiento = models.CharField(max_length=30, choices=MOTIVOS_ALOJAMIENTO, default='visita')
+    cantidad = models.PositiveIntegerField(default=1)
+    listado = models.FileField(upload_to='alojamientos', null=False, blank=False) #Deberá ingresarse el Excel con la lista de personas para la solicitud.
+    comentario = models.TextField(blank=True, null=True)
+
 
 class Movilizacion(SolicitudBase): #Para registro de Solicitud de Transporte
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)

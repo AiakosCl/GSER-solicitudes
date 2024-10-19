@@ -3,6 +3,7 @@ from django.db.models import Q, Sum
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.apps import apps
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db import transaction
@@ -402,10 +403,23 @@ def historial(request):
 
 # --- Valoración de Servicios --- #
 
-def valorar_servicios(request, servicio_id, servicio_model):
-    modelo = servicio_id.split('-')[0]
-    servicio_instance = servicio_model.objects.get(pk=servicio_id)
+@login_required
+def valorar_servicios(request, servicio_id):
+    modelo = int(servicio_id.split('-')[0])
+    
+    # Validación si el área de servicio existe y obtiene su nombre y clase, si no, redireccionar a inicio
+    try:
+        area_servicio = AreaServicio.objects.get(pk=modelo)
+        servicio_model = apps.get_model('web', area_servicio._meta.model_name) # Obtener el modelo del area de servicio (nombre y clase)
+        servicio_instance = servicio_model.objects.get(pk=servicio_id)
+    except (AreaServicio.DoesNotExist, servicio_model.DoesNotExist) as e: # Valida si tanto el área de servicio como el modelo existen
+        messages.error(request, f'{iconos["mal"]}\tClase de Servicio no encontrado')
+        return redirect('inicio')
+    except servicio_instance.DoesNotExist: # Valida si el requeriminto o solicitud existe
+        messages.error(request, f'{iconos["mal"]}\tRequerimiento/Solicitud no existe')
+        return redirect('inicio')
 
+    # Crear valoración
     if request.method == 'POST':
         calificacion = request.POST.get('calificacion')
         comentario = request.POST.get('comentario')
