@@ -7,7 +7,7 @@ from django.utils import timezone
 import uuid
 
 # ---- Tabla de Perfiles y Usuarios ---- #
-class Gerencia(models.Model):
+class Gerencia(models.Model): #Maesto de Gerencias y Centros de Costos
     ceco = models.CharField(primary_key=True, max_length=5, blank=False, null=False)
     descripcion = models.CharField(max_length=70, blank=False, null=False)
     gerencia = models.CharField(max_length=50,blank=False, null=False, default="")
@@ -16,13 +16,13 @@ class Gerencia(models.Model):
     def __str__(self) -> str:
         return f'[{self.descripcion}] - {self.ceco} - {self.aprobador}'
 
-class Especialidad(models.Model):
+class Especialidad(models.Model): #Maestro de especialidades de mantención (Electricidad, Plomería, etc.)
     especialidad = models.CharField(max_length=50, unique=True, null=False, blank=False)
 
     def __str__(self) -> str:
         return self.especialidad
 
-class Perfiles(models.Model):
+class Perfiles(models.Model): #Perfiles de los usuarios, acá podrá especificarse su acceso también.
     nombre_perfil = models.CharField(max_length=10, null=False, blank=False)
 
     class Meta:
@@ -32,7 +32,7 @@ class Perfiles(models.Model):
     def __str__(self) -> str:
         return self.nombre_perfil
 
-class MAE(models.Model):
+class MAE(models.Model): #Maestro de Personal de dónde se obtendrán los datos para crear el Usuario.
     sap = models.CharField(max_length=6, primary_key=True)
     rut = models.CharField(max_length=13, blank=False, null=False, default="1-9")
     nombre=models.CharField(max_length=70, blank=False, null=False)
@@ -51,7 +51,7 @@ class MAE(models.Model):
     def __str__(self) -> str:
         return f'[{self.ceco_id}] - {self.nombre} - {self.cargo}'
 
-class Usuario(AbstractUser):
+class Usuario(AbstractUser): #Maestro de usuarios, que obtendrá la información desde un Maestro de Personal.
     email = models.EmailField(unique=True)
     rut = models.CharField(max_length=10, unique=True)
     ceco_id = models.ForeignKey(Gerencia, on_delete=models.CASCADE, default="ADM01")
@@ -69,7 +69,7 @@ class Usuario(AbstractUser):
     def __str__(self):
         return f'[{self.username}] - {self.last_name}, {self.first_name} {self.email}'
 
-class Tecnico(models.Model):
+class Tecnico(models.Model): #Mantenedor de Tecnicos por su especialidad para la asignación de tareas de mantención levantadas por el sistema.
     rut = models.CharField(max_length=10, primary_key=True)
     nombre = models.CharField(max_length=70, blank=False, null=False)
     telefono = models.CharField(max_length=12, null=True, blank=True)
@@ -85,13 +85,13 @@ class Tecnico(models.Model):
         return f'[{self.rut}] - {self.nombre} - {self.especialidad}'
 
 # --- Tablas de Edificios y Oficinas --- #
-class Area(models.Model):
+class Area(models.Model): #Mantenedor de áreas en dónde se encuentran los edificios de la división.
     nombre_area=models.CharField(max_length=20, null=False, blank=False)
 
     def __str__(self) -> str:
         return self.nombre_area
 
-class Edificio(models.Model):
+class Edificio(models.Model): #Mantenedor de edificios existentes en la División, y que tendrán habitaciones en dónde actuar.
     TIPO_EDIFICIO = (
         ('Hotel', 'Hotel'), 
         ('nodo 3500', 'Nodo 3500'),
@@ -105,7 +105,7 @@ class Edificio(models.Model):
     def __str__(self):
         return f'[{self.nombre_edificio}] - Area: {self.area}'
     
-class Habitacion(models.Model):
+class Habitacion(models.Model): #Mantenedor de habitaciones existentes, y se refiere a tipo, como por ejemplo dormitorios, oficinas, baños, etc.
     TIPO_HABITACION = (
         ("dormitorio", "Dormitorio"),
         ("comedor", "Comedor"),
@@ -117,7 +117,7 @@ class Habitacion(models.Model):
     )
     edificio = models.ForeignKey(Edificio, on_delete=models.CASCADE)
     nombre_habitacion = models.CharField(max_length=50, unique=True, null=False, blank=False)
-    tipo_habitacion = models.CharField(max_length=50, choices=TIPO_HABITACION, null=False, blank=False)
+    tipo_habitacion = models.CharField(max_length=50, choices=TIPO_HABITACION, null=False, blank=False, default="dormitorio")
 
 
     def __str__(self):
@@ -127,14 +127,14 @@ class Habitacion(models.Model):
         verbose_name = "Habitación"
         verbose_name_plural = "Habitaciones"
 
-class SalasCambio(models.Model):
+class SalasCambio(models.Model): #Mantenedor de Casa de Cambios existentes
     nombre_sala = models.CharField(max_length=50, unique=True, null=False, blank=False)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'[{self.nombre_sala}] - Area: {self.area}'
     
-class Lockers(models.Model):
+class Lockers(models.Model): #Mantenedor de Lockers a asignar al usuario.
     LUGAR_TRABAJO= (
         ('Saladillo', 'Saladillo'),
         ('SPMFC', 'SPMFC'),
@@ -166,7 +166,7 @@ class Lockers(models.Model):
 
 # --- Tabla de Servicios --- #
 
-class AreaServicio(models.Model):
+class AreaServicio(models.Model): #Mantenedor de áreas de servicios (Alimentación, hotelería, mantención, etc.)
     nombre_area = models.CharField(max_length=50, unique=True, blank=False, null=False)
     imagen = models.ImageField(upload_to='servicios', null=True, blank=True)
     descripcion = models.TextField(blank=False, null=False, default="Sin info")
@@ -179,7 +179,7 @@ class AreaServicio(models.Model):
     def __str__(self):
         return f'[{self.nombre_area}] - Administrador: {self.administrador}'
 
-class Servicio(models.Model):
+class Servicio(models.Model): #Acá se registrarán todos los servicios con detalle multilínea, como por ejemplo: Servicios de alimentación o lavandería, en dónde en una solicitud se puede especificar más de un servicio en una única solicitud.
     nombre_servicio = models.CharField(max_length=50, unique=True, null=False, blank=False)
     descripcion_servicio = models.TextField(blank=False)
     area_servicio = models.ForeignKey(AreaServicio, on_delete=models.CASCADE)
@@ -194,22 +194,22 @@ class Servicio(models.Model):
     def __str__(self):
         return f'[{self.nombre_servicio}] - {self.area_servicio} - {self.autorizacion}'
 
-class TareasMantencion(models.Model):
+class TareasMantencion(models.Model): #Tareas de Mantenimiento (mantenedores)
     nombre_tarea = models.CharField(max_length=50, unique=True, null=False, blank=False)
     area_accion = models.ForeignKey(Especialidad, on_delete=models.CASCADE)
     descripcion_tarea = models.TextField(blank=False)
     timing = models.PositiveBigIntegerField(default=0)
 
-class Valoracion(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id= models.PositiveIntegerField()
+class Valoracion(models.Model): #Acá se guardará la valorización de los servicios una vez finalizados para registro y métricas de satisfacción.
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, default=1)
+    object_id= models.PositiveIntegerField(default=1)
     content_object = GenericForeignKey('content_type', 'object_id')
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     calificacion = models.PositiveSmallIntegerField(
         default=5,
         validators=[MinValueValidator(1), MaxValueValidator(5)]
         )  # Generará una validación de 1 a 5
-    comentario = models.TextField(blank=True, null=True)
+    comentario = models.TextField(blank=True, null=True, default="Sin comentarios")
     fecha_valoracion = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -221,7 +221,7 @@ class Valoracion(models.Model):
 
 
 # ---- Trabajo con Contacto / reclamo / sugerencias, etc ---- #
-class Contactos(models.Model):
+class Contacto(models.Model): # Tabla de contacto a la superintendencia, para registro de reclamos, sugerencias, felicitaciones, etc.
     TIPO_CONTACTO = (
         ('consulta', 'Consulta'),
         ('felicitacion', 'Felicitación'),
@@ -232,20 +232,33 @@ class Contactos(models.Model):
     ContactoId = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     tipo_contacto = models.CharField(max_length=20, choices=TIPO_CONTACTO, null=False, blank=False)
+    area = models.ForeignKey(AreaServicio, on_delete=models.CASCADE, default=1)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    EmailCliente = models.EmailField(max_length=50, blank=False, null=False)
-    Mensaje = models.TextField(null=False, blank=False)
+    emailcliente = models.EmailField(max_length=50, blank=False, null=False)
+    telefono = models.CharField(max_length=10, null=True, blank=True)
+    mensaje = models.TextField(null=False, blank=False)
 
     def __str__(self) -> str:
-        return f"{self.tipo_contacto} - {self.EmailCliente} - {self.fecha_creacion}"
+        return f"{self.fecha_creacion.strftime('%d-%m-%Y %H:%M')} - {self.get_tipo_contacto_display()} - {self.emailcliente} - {self.area.nombre_area}"
 
 
 # ---- Trabajo Solicitudes, carritos y otros ---- #
+
+class ContadorSolicitudes(models.Model): # Contador de Solicitudes. Acá se obtendrá el número de registro de cada tipo de servicio para generar el contador.
+    total_solicitudes = models.PositiveIntegerField(default=0)
+
+    @classmethod
+    def incrementar(cls):
+        contador, created = cls.objects.get_or_create(pk=1)
+        contador.total_solicitudes += 1
+        contador.save()
+        return contador.total_solicitudes
 
 class SolicitudBase(models.Model): #Para Registro de Solicitudes de sobrecupo mantención camionetas
     ESTADO_SOLICITUD = (
     ('pendiente', 'Pendiente'),
     ('aprobada', 'Aprobada'),
+    ('en proceso', 'En Proceso'),
     ('rechazada', 'Rechazada'),
     ('completada', 'Completada')
 )
@@ -265,19 +278,18 @@ class SolicitudBase(models.Model): #Para Registro de Solicitudes de sobrecupo ma
         if not self.id:
             area_abreviado = self.area_servicio.nombre_area[0:3].upper()
             anio_actual = timezone.now().year
-            total_solicitudes = Sobrecupo.objects.all().count() + 1
-            correlativo = f'{total_solicitudes:04d}'
-            self.id = f'{self.area_servicio.id}-{area_abreviado}-{anio_actual}-{correlativo}'
+            correlativo = ContadorSolicitudes.incrementar() # Obtiene el el correlativo de las solicitudes
+            self.id = f'{self.area_servicio.id}-{area_abreviado}-{anio_actual}-{correlativo:04d}'
         super().save(*args, **kwargs)
 
-class Carrito(models.Model):
+class Carrito(models.Model): #Este carrito llevará el pedido de servicios que puedan ser multiples, como por ejemplo Servicios de Alimentación y/o la Lavendería.
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return f'Carrito de: {self.usuario.username}'
 
-class ItemsCarrito(models.Model):
+class ItemsCarrito(models.Model): #Acá se llevará el registro de cada artículo de algún pedido multilínea.
     carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE)
     producto = models.ForeignKey(Servicio, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
@@ -285,13 +297,13 @@ class ItemsCarrito(models.Model):
     def __str__(self) -> str:
         return f'{self.cantidad} x {self.producto.nombre_servicio}'
 
-class Pedido(SolicitudBase):
+class Pedido(SolicitudBase): #Acá se registrará el pedido multilínea y el total de los mismos. Por ejemplo, Servicios de Alimentación y/o la Lavendería.
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self) -> str:
         return f'Pedido #{self.id} - Usuario: {self.usuario.username}'
 
-class DetallePedido(models.Model):
+class DetallePedido(models.Model): #El pedido multilínea se registrará en el detalle del pedido.
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     producto = models.ForeignKey(Servicio, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField()
@@ -304,7 +316,7 @@ class OT(SolicitudBase): #Para registro de OT Mantención
     tecnico_asignado = models.ForeignKey(Tecnico, on_delete=models.CASCADE, limit_choices_to={'estado': True})
     tarea_mantencion = models.ForeignKey(TareasMantencion, on_delete=models.CASCADE)
     edificio = models.ForeignKey(Edificio, on_delete=models.CASCADE)
-    habitacion = models.ForeignKey(Habitacion, on_delete=models.CASCADE, limit_choices_to={'edificio': edificio})
+    habitacion = models.ForeignKey(Habitacion, on_delete=models.CASCADE)
     imagen_ot = models.ImageField(upload_to='ot', null=True, blank=True) #Permitirá tomar una foto en cuestión y subirla, aunque no será obligatorio.
     imagen_cierre = models.ImageField(upload_to='ot', null=True, blank=True) #Subir evidencia de lo que se realizó.
     comentario = models.TextField(blank=True, null=True)
@@ -332,7 +344,6 @@ class Alojamiento(SolicitudBase): #Para registro de Solicitud de Alojamiento
     cantidad = models.PositiveIntegerField(default=1)
     listado = models.FileField(upload_to='alojamientos', null=False, blank=False) #Deberá ingresarse el Excel con la lista de personas para la solicitud.
     comentario = models.TextField(blank=True, null=True)
-
 
 class Movilizacion(SolicitudBase): #Para registro de Solicitud de Transporte
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)

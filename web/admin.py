@@ -26,7 +26,12 @@ class AreaServicioAdmin(admin.ModelAdmin):
 class ServicioAdmin(admin.ModelAdmin):
     list_display = ('id','nombre_servicio','area_servicio' )
     list_filter = ('nombre_servicio','area_servicio' )
-    search_fields = ('nombre_servicio','area_servicio' )
+    search_fields = ('nombre_servicio','area_servicio')
+
+class ContactoAdmin(admin.ModelAdmin):
+    list_display = ('ContactoId','usuario','tipo_contacto','area','emailcliente','telefono','mensaje' )
+    list_filter = ('usuario','tipo_contacto','area','emailcliente','telefono','mensaje' )
+    search_fields = ('usuario','tipo_contacto','area','emailcliente','telefono','mensaje' ) 
 
 
 # Modelos que aparecerán en la consola de admin
@@ -41,3 +46,4 @@ admin.site.register(Lockers)
 admin.site.register(Servicio, ServicioAdmin)
 admin.site.register(AreaServicio, AreaServicioAdmin)
 admin.site.register(SalasCambio)
+admin.site.register(Contacto, ContactoAdmin)

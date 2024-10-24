@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+
+
+{% block contenido %}
+<section id="Contacto">
+    <!-- <div class="container text-center">
+        <button type="button" class="btn btn-outline-dark btn-lg m-2" data-bs-toggle="modal" data-bs-target="#nuevoProductoModal">Contacto</button>
+    </div> -->
+</section>
+
+
+<!-- Modal -->
+<div class="modal fade" id="nuevoProductoModal" tabindex="-1" aria-labelledby="nuevoProductoModalLabel"
+    aria-hidden="true" style="background-color: rgb(255, 255, 255,0.4);">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">Contáctanos</h1>
+                <a href="{% url 'inicio' %}"><button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button></a>
+            </div>
+            <div class="modal-body">
+                <!-- formulario de contacto/sugerencia -->
+                <div class="container text-start py-2" style="width: 100%;">
+                    <h3 class="fw-bold">Hola, {{usuario.first_name}}:</h3><br>
+                    <div class="d-none d-md-block">Por favor, coméntanos el motivo de tu contacto, y te responderemos a
+                        la brevedad posible.</div>
+                </div>
+                <!-- barra de mensajes -->
+                {% include "includes/mensajes.html" %}
+                <!-- barra de mensajes -->
+                <form method="post" width="100%" class="row g-3 mx-3">
+                    {% csrf_token %}
+                    <!-- {{contacto.non_fields_errors}} -->
+                    <!-- Aquí cuando colocas el nombre del campo de tu modelo en "name=" de tu tag input, los relacionas -->
+                    <div class="form-floating mb-3">
+                        <input type="hidden" class="form-control" id="id_usuario" name="usuario"
+                            placeholder="Su nombre" value={{usuario.id|default_if_none:''}}>
+                    </div>
+                    <div class="text-danger">
+                        {{usuario.first_name.errors}}
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="id_NombreCliente" name="NombreCliente"
+                            placeholder="Su nombre" value={{usuario.first_name|default_if_none:''}}>
+                            <label for="id_NombreCliente" class="form-label">Tu nombre:</label>
+                    </div>
+                    <div class="text-danger">
+                        {{usuario.first_name.errors}}
+                    </div>
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control" id="id_EmailCliente" name="emailcliente"
+                                        placeholder="correo@electronico.com" value="{{usuario.email|default_if_none:''}}">
+                                    <label for="id_EmailCliente" class="form-label">Tu correo:</label>
+                                </div>
+                                <div class="text-danger">
+                                    {{formulario.emailcliente.errors}}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="telefono" name="telefono" value="{{usuario.telefono|default_if_none:''}}">
+                                    <label for="telefono" class="form-label">Tu número (para contactarte, si aplica):</label>
+                                </div>
+                                <div class="text-danger">
+                                    {{formulario.telefono.errors}}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="mb-3">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipo_contacto" id="flexRadioDefault1" value="consulta" checked>
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            Consulta
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipo_contacto" id="flexRadioDefault2" value="felicitacion">
+                                        <label class="form-check-label" for="flexRadioDefault2">
+                                            Felicitación
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipo_contacto" id="flexRadioDefault3" value="sugerencia">
+                                        <label class="form-check-label" for="flexRadioDefault3">
+                                            Sugerencia
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipo_contacto" id="flexRadioDefault4" value="reclamo">
+                                        <label class="form-check-label" for="flexRadioDefault4">
+                                            Reclamo
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipo_contacto" id="flexRadioDefault5" value="otro">
+                                        <label class="form-check-label" for="flexRadioDefault5">
+                                            Otros
+                                        </label>
+                                    </div>
+                                </div>
+                            </td>
+                            <tr>
+                                <td>
+                                    <div class="form-floating">
+                                        <select name="area" id="selector_area" class="form-select">
+                                            {% for area in areas %}
+                                            <option value="{{area.id}}">{{area.nombre_area}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="selector_area">Servicio relacionado:</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tr>
+                    </table>
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" id="id_Mensaje" name="mensaje" rows="3"
+                            ></textarea>
+                            <label for="id_Mensaje" class="form-label">Coméntanos:</label>
+                    </div>
+                    <div class="text-danger">
+                        {{contacto.Mensaje.errors}}
+                    </div>
+                    <div class="my-3 text-end">
+                        <button type="submit" class="btn btn-outline-light btn-lg m-2" href="#contenido">Enviar</button>
+                    </div>
+                </form>
+                <!-- formulario de contacot -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para activar Modal cuando se cargue la página -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var nuevoProductoModal = new bootstrap.Modal(document.getElementById('nuevoProductoModal'));
+        nuevoProductoModal.show();
+    });
+</script>
+{% endblock %}

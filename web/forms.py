@@ -99,3 +99,16 @@ class NuevoUsuarioForm(UserCreationForm):
 
 class TicketLavanderiaForm(forms.ModelForm): #Revisar el formulario para continuar.
     pass
+
+class ContactoForm(forms.ModelForm):
+    class Meta:
+        model = Contacto
+        fields = ['usuario','tipo_contacto','area','emailcliente','telefono','mensaje']
+        labels = {
+            'usuario':'Usuario:',
+            'tipo_contacto':'Motivo de tu contacto:',
+            'area':'Área de Servicio:',
+            'emailcliente':'Tu correo:',
+            'telefono':'Tu número (para contactarte):',
+            'mensaje':'Coméntanos'
+        }

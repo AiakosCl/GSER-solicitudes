@@ -42,5 +42,6 @@ urlpatterns = [
     path('carrito/eliminar/<int:elemento_id>/', eliminar_item_carrito, name='eliminar_linea'),
     path('carrito/aumentar/<int:elemento_id>/', aumentar_item, name='aumentar_item'),
     path('carrito/disminuir/<int:elemento_id>/', disminuir_item, name='disminuir_item'),
-    path('historial-pedidos/', historial, name='historial')
+    path('historial-pedidos/', historial, name='historial'),
+    path('contacto/', contacto, name='contacto'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

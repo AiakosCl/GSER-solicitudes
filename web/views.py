@@ -148,7 +148,6 @@ def eliminar_usuario(request, usuario_id):
     else:
         messages.warning(request,f'{iconos["mal"]}\tUsted no está autorizado para esta operación')
         return redirect('inicio')
-
 @login_required    
 def filtrarUsuarios(request):
     termino = request.GET.get('q')
@@ -284,7 +283,6 @@ def disminuir_item(request, elemento_id):
         elemento.save()
 
     return redirect('ver_carrito')
-
 
 # Varciar el registro en Carrito
 @login_required
@@ -448,3 +446,24 @@ def mostrar_valoraciones(request, servicio_id, servicio_model):
     valoraciones = Valoracion.objects.filter(content_type=content_type, object_id=servicio_instance.id)
 
     return render(request, 'mostrar_valoraciones.html', {'servicio': servicio_instance, 'valoraciones': valoraciones})
+
+
+# --- Trabajo con Contacto Sugerencias --- #
+
+@login_required
+def contacto(request):
+    usuario = Usuario.objects.get(id=request.user.id)
+    areas = AreaServicio.objects.all()
+
+    if request.method == 'POST':
+        formulario = ContactoForm(request.POST)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, f'{iconos["ok"]}\t¡Gracias por contactarnos!')
+            return redirect('inicio')
+        else:
+            messages.warning(request, f'{iconos["mal"]}\tUps! Algo salió mal. Revisar la inforamción ingresada.')
+    else:
+        formulario = ContactoForm()
+
+    return render(request, 'contacto.html', {'formulario': formulario, 'usuario': usuario,'areas': areas}) 
