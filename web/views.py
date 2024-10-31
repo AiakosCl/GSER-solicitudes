@@ -462,8 +462,21 @@ def contacto(request):
             messages.success(request, f'{iconos["ok"]}\t¡Gracias por contactarnos!')
             return redirect('inicio')
         else:
-            messages.warning(request, f'{iconos["mal"]}\tUps! Algo salió mal. Revisar la inforamción ingresada.')
+            messages.error(request, f'{iconos["mal"]}\tUps! Algo salió mal. Revisar la información ingresada o faltante.')
     else:
         formulario = ContactoForm()
 
     return render(request, 'contacto.html', {'formulario': formulario, 'usuario': usuario,'areas': areas}) 
+
+
+# ---- Trabajo con Solicitud de servicios ------ #
+
+@login_required
+def solicitar(request, id_areaservicio):
+
+    try:
+        servicio = AreaServicio.objects.get(id=id_areaservicio)
+    except AreaServicio.DoesNotExist:
+        messages.error(request, f'{iconos["mal"]}\tArea de Servicio no encontrada')
+        return redirect('inicio')
+    

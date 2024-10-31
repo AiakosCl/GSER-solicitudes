@@ -4,10 +4,10 @@
 
 {% block contenido %}
 <section class="mt-2" id="contenido">
-    {% include "includes/preloader.html" %}
-
+    
+    <!-- {% include "includes/preloader.html" %} -->
+    
     <div class="section properties">
-
         <div class="container px-4 text-center">
             <h1 class="text-center py-5"><i class="fa-solid fa-hotel"></i> Nuestros Servicios</h1>
             <ul class="properties-filter">
@@ -33,8 +33,6 @@
                     <a href="#!" data-filter=".otr">Otros</a>
                 </li>
             </ul>
-            <h2>{% include "includes/mensajes.html" %}</h2>
-
             <div class="properties-box row gx-5">
                 {% for areaservicio in areas %}
                 <div
@@ -49,13 +47,6 @@
                         <!-- <h6 class="price">$ {{ inmueble.precio|floatformat:'-3g'}}</h6> -->
                         <h6>{{ inmueble.comuna }}</h6>
                         <div class="descripcion"><a href="#!" class="form_error">{{areaservicio.descripcion}}</a></div>
-                        <!-- <ul>
-                            <li><i class="fa-solid fa-bed"></i> <span>{{inmueble.habitaciones}}</span></li>
-                            <li><i class="fa-solid fa-toilet"></i> <span>{{inmueble.banos}}</span></li>
-                            <li><i class="fa-solid fa-ruler-horizontal"></i> <span>{{inmueble.m2_construidos}} m&sup2; / {% if inmueble.m2_totales %}{{inmueble.m2_totales}} m&sup2;{% else %}0{% endif %}</span></li>
-                            <li><i class="fa-solid fa-car-side"></i> <span>{{inmueble.estacionamientos}}</span></li>
-                            <li><span><i class="fa-regular fa-eye"></i><span> {{inmueble.visitas|floatformat:'-3g'}} vistas</span></li>
-                        </ul> -->
                         <div class="main-button">
                             <a href="#!">Solicitar</a>
                         </div>

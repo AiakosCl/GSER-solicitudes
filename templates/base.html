@@ -29,10 +29,6 @@
     {% include "includes/header.html" %}
     {% endblock %}
 
-    <!-- <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#offcanvasRight" role="button" aria-controls="offcanvasExample">
-        activar panel
-    </a> -->
-
     {% block contenido %}
     {% endblock %}
 
@@ -43,6 +39,8 @@
     {% block modals %}
     {% include "includes/modals.html" %}
     {% endblock modals %}
+
+    {% include 'includes/toasts.html' %}
 
     {% include 'includes/scripts_boot.html' %}
 
@@ -93,6 +91,16 @@
         });
 
     </script>
+    <script> // Script para activar Toast
+        document.addEventListener('DOMContentLoaded', function() {
+            var toastElements = document.querySelectorAll('.toast');
+            toastElements.forEach(function(toastElement) {
+                var toast = new bootstrap.Toast(toastElement);
+                toast.show();
+            });
+        });
+    </script>
+    
 </body>
 
 </html>

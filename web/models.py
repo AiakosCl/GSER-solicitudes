@@ -6,7 +6,10 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 import uuid
 
+
 # ---- Tabla de Perfiles y Usuarios ---- #
+
+
 class Gerencia(models.Model): #Maesto de Gerencias y Centros de Costos
     ceco = models.CharField(primary_key=True, max_length=5, blank=False, null=False)
     descripcion = models.CharField(max_length=70, blank=False, null=False)
@@ -84,7 +87,10 @@ class Tecnico(models.Model): #Mantenedor de Tecnicos por su especialidad para la
     def __str__(self) -> str:
         return f'[{self.rut}] - {self.nombre} - {self.especialidad}'
 
+
 # --- Tablas de Edificios y Oficinas --- #
+
+
 class Area(models.Model): #Mantenedor de áreas en dónde se encuentran los edificios de la división.
     nombre_area=models.CharField(max_length=20, null=False, blank=False)
 
@@ -166,6 +172,7 @@ class Lockers(models.Model): #Mantenedor de Lockers a asignar al usuario.
 
 # --- Tabla de Servicios --- #
 
+
 class AreaServicio(models.Model): #Mantenedor de áreas de servicios (Alimentación, hotelería, mantención, etc.)
     nombre_area = models.CharField(max_length=50, unique=True, blank=False, null=False)
     imagen = models.ImageField(upload_to='servicios', null=True, blank=True)
@@ -221,6 +228,8 @@ class Valoracion(models.Model): #Acá se guardará la valorización de los servi
 
 
 # ---- Trabajo con Contacto / reclamo / sugerencias, etc ---- #
+
+
 class Contacto(models.Model): # Tabla de contacto a la superintendencia, para registro de reclamos, sugerencias, felicitaciones, etc.
     TIPO_CONTACTO = (
         ('consulta', 'Consulta'),
@@ -243,6 +252,7 @@ class Contacto(models.Model): # Tabla de contacto a la superintendencia, para re
 
 
 # ---- Trabajo Solicitudes, carritos y otros ---- #
+
 
 class ContadorSolicitudes(models.Model): # Contador de Solicitudes. Acá se obtendrá el número de registro de cada tipo de servicio para generar el contador.
     total_solicitudes = models.PositiveIntegerField(default=0)

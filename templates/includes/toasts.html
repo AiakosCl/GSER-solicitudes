@@ -1,0 +1,21 @@
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
+                <div class="toast-header">
+                    {% if message.tags == "error" %}
+                    <strong class="me-auto">🔴 Error</strong>
+                    {% elif message.tags == "success" %}
+                    <strong class="me-auto">🟢 Perfecto</strong>
+                    {% else %}
+                    <strong class="me-auto">🟡 Atención</strong>
+                    {% endif %}
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>

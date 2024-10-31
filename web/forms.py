@@ -112,3 +112,21 @@ class ContactoForm(forms.ModelForm):
             'telefono':'Tu número (para contactarte):',
             'mensaje':'Coméntanos'
         }
+
+        error_messages = {
+            'usuario': {
+                'unique': 'El nombre de usuario ya existe',
+            },
+            'tipo_contacto': {
+                'required': 'Debes indicar a qué se refiere tu contacto.'
+            },
+            'emailcliente': {
+                'required': '¿Cómo te contactamos en caso de ser necesario?'
+            },
+            'telefono': {
+                'required': '¿Cómo te contactamos en caso de ser necesario?',
+            },
+            'mensaje': {
+                'required': 'Por favor, danos más detalle. Nos ayudará a entender mejor tu caso.',
+            },
+        }
