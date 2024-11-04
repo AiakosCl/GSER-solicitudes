@@ -8,10 +8,16 @@ class NuevoUsuarioForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, help_text='Ingrese su nombre.')
     last_name = forms.CharField(max_length=30, required=True, help_text='Ingrese su Apellido.')
     username = forms.EmailField(required=True, help_text='Ingrese su correo electrónico.')
+    servicio_autorizado = forms.ModelMultipleChoiceField(
+        queryset=AreaServicio.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
+        label="Servicios Autorizados"
+    )
 
     class Meta:
         model = Usuario
-        fields = ('username','first_name', 'last_name','password1','password2','rut', 'ceco_id','telefono','tipo_usuario', 'alimentacion', 'hoteleria', 'lavanderia', 'transporte', 'mantencion')
+        fields = ('username','first_name', 'last_name','password1','password2','rut', 'ceco_id','telefono','tipo_usuario', 'servicio_autorizado')
         labels = {
             'username':'Nombre de usuario (correo electrónico):',
             'first_name': 'Nombre(s):',
@@ -22,11 +28,7 @@ class NuevoUsuarioForm(UserCreationForm):
             'telefono':'Número de contacto:',
             'ceco_id':'Centro de Costos:',
             'tipo_usuario':'Tipo de perfil:',
-            'alimentacion':'Solicita Alimentación?:',
-            'hoteleria':'Solicita Hotelería?:',
-            'transporte':'Solicita Transporte?:',
-            'mantencion':'Solicita Mantenciòn?:',
-            'lavanderia':'Usuario Lavandería?:'
+            'servicio_autorizado':'Servicios Autorizados:'
         }
 
         error_messages = {
@@ -71,14 +73,18 @@ class NuevoUsuarioForm(UserCreationForm):
             'tipo_usuario': {
                 'required': 'Este dato es obligatorio.',
             },
+            'servicio_autorizado': {
+                'required': 'Debe seleccionar a lo menos un servicio.',
+            },
         }
 
     # Acá se replicará el nombre de usuario en el campo correo.
     def save(self, commit=True):
-        user = super().save(commit=True)
+        user = super().save(commit=False)
         user.email = self.cleaned_data['username']
         if commit:
             user.save()
+            self.save_m2m()
         return user
 
 

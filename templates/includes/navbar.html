@@ -37,6 +37,10 @@
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item menu" href="#"><i class="fa-regular fa-envelope"></i> Mis Solicitudes</a></li>
                         <li><hr class="dropdown-divider"></li>
+                        {% for servicio in user.servicio_autorizado.all %}
+                        <li><a class="dropdown-item menu" href="{% url servicio.vista %}">{{servicio.nombre_area}}</a></li>
+                        {% endfor %}
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-utensils"></i> Alimentación</a></li>
                         <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-bed"></i> Hotelería</a></li>
                         <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-shirt"></i> Lavandería</a></li>

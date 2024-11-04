@@ -60,12 +60,8 @@ class Usuario(AbstractUser): #Maestro de usuarios, que obtendrá la información
     ceco_id = models.ForeignKey(Gerencia, on_delete=models.CASCADE, default="ADM01")
     telefono = models.CharField(max_length=20)
     tipo_usuario = models.ForeignKey(Perfiles, on_delete=models.CASCADE, default=3)
-    lavanderia = models.BooleanField(default=True)
-    alimentacion = models.BooleanField(default=False)
-    hoteleria = models.BooleanField(default=False)
-    transporte = models.BooleanField(default=False)
-    mantencion = models.BooleanField(default=True)
-
+    servicio_autorizado = models.ManyToManyField('AreaServicio', blank=True)
+    
     class Meta:
         verbose_name = "Usuario"
         verbose_name_plural = "Usuarios"
@@ -178,6 +174,7 @@ class AreaServicio(models.Model): #Mantenedor de áreas de servicios (Alimentaci
     imagen = models.ImageField(upload_to='servicios', null=True, blank=True)
     descripcion = models.TextField(blank=False, null=False, default="Sin info")
     administrador = models.EmailField(blank=False, null=False)
+    vista = models.CharField(max_length=50, default='mantencion', blank=False, null=False)
 
     class Meta:
         verbose_name = "Area de Servicio"

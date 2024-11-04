@@ -26,7 +26,10 @@ class Logout(LogoutView):
 # -- Funciones auxiliares -- #
 
 def index(request):
-    areas_servicios = AreaServicio.objects.all()
+    if request.user.is_authenticated:
+        areas_servicios = request.user.servicio_autorizado.all().order_by('id')
+    else:
+        areas_servicios = AreaServicio.objects.all().order_by('id')
     return render(request, 'index.html', {'areas': areas_servicios})
 
 #Vista Trabajo Usuarios
@@ -479,4 +482,23 @@ def solicitar(request, id_areaservicio):
     except AreaServicio.DoesNotExist:
         messages.error(request, f'{iconos["mal"]}\tArea de Servicio no encontrada')
         return redirect('inicio')
-    
+
+@login_required
+def alimentacion(request):
+    return render(request, 'alimentacion.html')
+
+@login_required
+def hoteleria(request):
+    return render(request, 'hoteleria.html')
+
+@login_required
+def lavanderia(request):
+    return render(request, 'lavanderia.html')
+
+@login_required
+def mantencion(request):
+    return render(request, 'mantencion.html')
+
+@login_required
+def transporte(request):
+    return render(request, 'transporte.html')

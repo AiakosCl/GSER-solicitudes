@@ -39,16 +39,16 @@
                     class="card-3d properties-items col-12 col-lg-4 col-md-6 mb-30 {% if areaservicio.id == 1 %}alm{% elif areaservicio.id == 2 %}hot{% elif areaservicio.id == 3 %}man{% elif areaservicio.id == 4 %}lav{% elif areaservicio.id == 5 %}tra{% else %}otr{% endif %}">
                     <div class="item">
                         <div class="image-container">
-                            <a href="#" class="card-trigger">
+                            <a href="{% url areaservicio.vista %}" class="card-trigger">
                                 <img src="{% if areaservicio.imagen %}{{ areaservicio.imagen.url }}{% else %}{% static 'images/srv_alimentacion.jpeg' %}{% endif %}" alt="" class="circular-images">
                             </a>
                         </div>
                         <span class="price">{{ areaservicio.nombre_area|title }}</span>
                         <!-- <h6 class="price">$ {{ inmueble.precio|floatformat:'-3g'}}</h6> -->
                         <h6>{{ inmueble.comuna }}</h6>
-                        <div class="descripcion"><a href="#!" class="form_error">{{areaservicio.descripcion}}</a></div>
+                        <div class="descripcion"><a href="{% url areaservicio.vista %}" class="form_error">{{areaservicio.descripcion}}</a></div>
                         <div class="main-button">
-                            <a href="#!">Solicitar</a>
+                            <a href="{% url areaservicio.vista %}">Solicitar</a>
                         </div>
                     </div>
                 </div>
