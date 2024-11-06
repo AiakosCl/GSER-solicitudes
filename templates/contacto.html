@@ -140,6 +140,10 @@
     document.addEventListener('DOMContentLoaded', function () {
         var NuevoModal = new bootstrap.Modal(document.getElementById('FormularioContacto'));
         NuevoModal.show();
+
+        document.getElementById('FormularioContacto').addEventListener('hidden.bs.modal', function () {
+            window.location.href = "{% url 'inicio' %}#contenido";
+        });
     });
 </script>
 {% endblock %}

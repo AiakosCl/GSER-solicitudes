@@ -4,9 +4,6 @@
 
 {% block contenido %}
 <section class="mt-2" id="contenido">
-    
-    <!-- {% include "includes/preloader.html" %} -->
-    
     <div class="section properties">
         <div class="container px-4 text-center">
             <h1 class="text-center py-5"><i class="fa-solid fa-hotel"></i> Nuestros Servicios</h1>
@@ -44,8 +41,6 @@
                             </a>
                         </div>
                         <span class="price">{{ areaservicio.nombre_area|title }}</span>
-                        <!-- <h6 class="price">$ {{ inmueble.precio|floatformat:'-3g'}}</h6> -->
-                        <h6>{{ inmueble.comuna }}</h6>
                         <div class="descripcion"><a href="{% url areaservicio.vista %}" class="form_error">{{areaservicio.descripcion}}</a></div>
                         <div class="main-button">
                             <a href="{% url areaservicio.vista %}">Solicitar</a>
@@ -61,5 +56,6 @@
     </div>
 </section>
 
+{% include 'carrito_offcanva.html' %}
 
 {% endblock %}

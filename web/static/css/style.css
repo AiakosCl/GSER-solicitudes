@@ -61,6 +61,10 @@ html {
     color: #f35525 !important;
 }
 
+.nav-link:focus {
+    color: #f35525 !important;
+}
+
 .nav-link {
     display: flex;
     flex-direction: column;
@@ -293,3 +297,4 @@ h3 {
 .connected {
     color:#f35525;
 }
+

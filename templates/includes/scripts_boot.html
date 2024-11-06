@@ -9,3 +9,79 @@
 <script src="{% static 'js/owl-carousel.js' %}"></script>
 <script src="{% static 'js/counter.js' %}"></script>
 <script src="{% static 'js/custom.js' %}"></script>
+
+<!-- Script varios para la el sistema GSER -->
+
+<script> // Script para obscurecer el navbar
+    window.onscroll = function () {
+        var navbar = document.querySelector('.navbar');
+        var dmenus = document.querySelectorAll('.dropdown-menu'); //Acá se está considerando que hay varios menus
+        if (window.scrollY > 100) {  // Cambia el valor 100 según la altura que consideres adecuada
+            navbar.classList.add('outside-header');
+            dmenus.forEach(function (dmenu) { // acá se aplicará a cada menu...
+                dmenu.classList.add('outside-header');
+            });
+        } else {
+            navbar.classList.remove('outside-header');
+            dmenus.forEach(function (dmenu) {
+                dmenu.classList.remove('outside-header');
+            });
+        }
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var header = document.querySelector('header');  // Asegúrate de que el header tenga esta etiqueta o ajusta el selector
+        var navbar = document.querySelector('.navbar');
+
+        var observer = new IntersectionObserver(function (entries) {
+            // Revisamos si el header es visible en la página
+            if (entries[0].isIntersecting) {
+                navbar.classList.remove('outside-header');  // Navbar dentro del header, transparente
+            } else {
+                navbar.classList.add('outside-header');  // Navbar fuera del header, sólido
+            }
+        }, { threshold: 0 });
+
+        observer.observe(header);
+    });
+
+</script>
+
+<script> // Script para activar Toast
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastElements = document.querySelectorAll('.toast');
+        toastElements.forEach(function (toastElement) {
+            var toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        });
+    });
+</script>
+
+<script>  // Script para obtener y formatear la fecha del sistema
+    let fechaActual = new Date();
+    let dia = fechaActual.getDate();
+    let mes = fechaActual.getMonth() + 1;
+    let anio = fechaActual.getFullYear();
+
+    let fechaFormateada = dia + "/" + mes + "/" + anio;
+
+    let elementoFecha = document.getElementById("fecha");
+    elementoFecha.textContent = fechaFormateada;
+</script>
+
+<script> // Script para activar Tooltips
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+
+<script> // Script para activar Offcanvas en el caso que exista un carrito
+    document.addEventListener('DOMContentLoaded', function () {
+        // Verificar si `show_cart` es `True` y abrir el Offcanvas
+        {% if show_cart %}
+        var offcanvasElement = document.getElementById('PanelCarrito');
+        var offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+        offcanvas.show();
+        {% endif %}
+    });
+</script>
+

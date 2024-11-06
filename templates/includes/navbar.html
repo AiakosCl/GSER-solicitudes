@@ -30,29 +30,41 @@
                     <a class="nav-link dropdown-toggle menu" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         <i class="fa-solid fa-users fs-1"></i>
-                        <span>Gestión de Solicitudes</span>
+                        <span>
+                            Gestión de Solicitudes
+                        </span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item menu" href="{% url 'Ficha' user.id %}#usuarios" target="_blank"><i class="fa-solid fa-address-card"></i> Mi cuenta</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item menu" href="#"><i class="fa-regular fa-envelope"></i> Mis Solicitudes</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item menu" href="{% url 'Ficha' user.id %}#usuarios" target="_blank"><i
+                                    class="fa-solid fa-address-card"></i> Mi cuenta</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item menu" href="#"><i class="fa-regular fa-envelope"></i> Mis
+                                Solicitudes</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         {% for servicio in user.servicio_autorizado.all %}
-                        <li><a class="dropdown-item menu" href="{% url servicio.vista %}">{{servicio.nombre_area}}</a></li>
+                        <li><a class="dropdown-item menu" href="{% url servicio.vista %}"><i
+                                    class="{{servicio.icono}}"></i> {{servicio.nombre_area}}</a></li>
                         {% endfor %}
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-utensils"></i> Alimentación</a></li>
-                        <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-bed"></i> Hotelería</a></li>
-                        <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-shirt"></i> Lavandería</a></li>
-                        <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-screwdriver-wrench"></i> Mantención</a></li>
-                        <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-van-shuttle"></i> Transporte</a></li>
-                        {% if user.tipo_usuario == 2 %}
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-file-lines"></i> Ver Aprobaciones</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item menu" href="#" target="_blank"><i class="fa-regular fa-envelope"></i> Ver mensajes</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-list"></i> Mi Dashboard</a></li>
+                        {% if user.tipo_usuario_id == 2 %}
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-file-lines"></i> Ver
+                                Aprobaciones</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item menu" href="#" target="_blank"><i
+                                    class="fa-regular fa-envelope"></i> Ver mensajes</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-list"></i> Mi Dashboard</a>
+                        </li>
                         {% endif %}
                     </ul>
                 </li>
@@ -64,13 +76,22 @@
                         <span style="font-size: 14px;">Administrador</span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item menu" href="{% url 'NuevoUsuario' %}#usuarios"><i class="fa-solid fa-user-plus"></i> Nuevo usuario</a></li>
-                        <li><a class="dropdown-item menu" href="{% url 'ListaUsuarios' %}#usuarios"><i class="fa-solid fa-users-gear"></i> Listar Usuarios</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-list-ol"></i> Lista solicitudes</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-file-arrow-up"></i> Cargas masivas</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item menu" href="/admin/" target="_blank"><i class="fa-solid fa-user-secret"></i> Consola Admin</a></li>
+                        <li><a class="dropdown-item menu" href="{% url 'NuevoUsuario' %}#usuarios"><i
+                                    class="fa-solid fa-user-plus"></i> Nuevo usuario</a></li>
+                        <li><a class="dropdown-item menu" href="{% url 'ListaUsuarios' %}#usuarios"><i
+                                    class="fa-solid fa-users-gear"></i> Listar Usuarios</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item menu" href="#"><i class="fa-solid fa-list-ol"></i> Lista
+                                solicitudes</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-file-arrow-up"></i> Cargas
+                                masivas</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item menu" href="/admin/" target="_blank"><i
+                                    class="fa-solid fa-user-secret"></i> Consola Admin</a></li>
                     </ul>
                 </li>
                 {% endif %}
@@ -85,7 +106,9 @@
                                 <a class="nav-link menu" href="{% url 'logout' %}">Cerrar sesión</a>
                             </td>
                             <td>
-                                <a href="#"><i class="fa-regular fa-envelope fs-1"></i></a>
+                                <a class="btn" data-bs-toggle="offcanvas" href="#PanelCarrito" role="button"
+                                    aria-controls="#PanelCarrito">
+                                    <i class="fa-solid fa-cart-shopping fs-1 {% if carrito %}text-danger{% else %}text-light{% endif %}"></i></a>
                             </td>
                         </tr>
                     </table>

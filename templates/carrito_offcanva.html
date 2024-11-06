@@ -1,0 +1,80 @@
+{% load static %}
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="PanelCarrito" aria-labelledby="offcanvasExampleLabel"
+    style="width: 95%;max-width: 700px;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel"><i class="fa-solid fa-cart-shopping"></i> Carrito</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <section id="carrito">
+            <div>
+                <h2>Detalle de tu solicitud</h2>
+                <div>
+                    <hr>
+                    {% include 'includes/identificacion.html' %}
+                    <hr>
+                    Aquí, se encuentra el detalle de lo que has ido agregando. Revisa las cantidades y/o modifícalas si
+                    lo deseas.
+                    <hr>
+                </div>
+
+                <div id="table-responsive" style="max-width:100%;max-height: 400px;overflow-y: auto;">
+                    {% if carrito %}
+                    <table class="table table-sm align-middle" style="max-width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Artículo</th>
+                                <th>Q</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% csrf_token %}
+                            {% for elemento in elementos %}
+                            <tr>
+                                <td><img src="{% if not elemento.producto.imagen %}{% static 'images/srv_lavanderia.jpeg' %}{% else %}{{ elemento.producto.imagen.url }}{% endif %}"
+                                        alt="{{ elemento.producto.nombre }}" class="rounded img-thumbnail float-start"
+                                        width="100px"></td>
+                                <td>{{ elemento.producto.nombre_servicio }}</td>
+                                <td>{{ elemento.cantidad }}</td>
+                                <td>
+                                    <a href="{% url 'aumentar_item' elemento.id %}?vista={{vista}}#carrito"><i
+                                            class="fa-solid fa-circle-plus fs-3 text-success" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Aumentar artículo..."></i></a>
+                                    <a href="{% url 'disminuir_item' elemento.id %}?vista={{vista}}#carrito"><i
+                                            class="fa-solid fa-circle-minus fs-3 text-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Disminuir artículo..."></i></a>
+                                    <a href="{% url 'eliminar_linea' elemento.id %}?vista={{vista}}#carrito"><i
+                                            class="fa-solid fa-trash-can fs-3 text-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Quitar artículo..."></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div>
+                        <h2 class="text-center" style="width: 100%;"><i class="fa-regular fa-face-frown-open"></i> Tu
+                            carro está
+                            vacío</h2>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div>
+                <h3 class="text-end">Total <i class="fa-solid fa-receipt"></i>: {{ total }}</h3>
+            </div>
+            <div class="text-end">
+                {% if carrito %}
+                <a href="{% url 'vaciar_carrito' %}">
+                    <button type="button" class="btn btn-outline-danger btn-lg m-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Eliminar carrito..."><i class="fa-solid fa-trash-arrow-up"></i></button>
+                </a>
+                {% endif %}
+
+                <a href="{% if carrito %}{% url vista %}#carrito{% else %}{% url 'inicio' %}#contenido{% endif %}"><button
+                        type="button" class="btn btn-outline-primary btn-lg m-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Agregar otro artículo..."><i
+                            class="fa-solid fa-cart-plus"></i></button></a>
+                {% if carrito %}<button type="button" class="btn btn-outline-success btn-lg m-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Hacer la solicitud..."><i class="fa-regular fa-thumbs-up"></i></button>{% endif %}
+            </div>
+        </section>
+    </div>
+</div>

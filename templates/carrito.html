@@ -1,21 +1,25 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block contenido %}
 <section id="carrito">
-    <div class="border border-info-subtle rounded-3" style="max-width: 1280px;">
-        <h2>Tu carrito de Compras</h2>
-        <div id="table-responsive" style="max-width:100%;max-height: 700px;overflow-y: auto;">
+    <div class="border border-info-subtle rounded-3">
+        <h2>Detalle de tu solicitud</h2>
+        <div>
+            <hr>
+            Aquí, se encuentra el detalle de lo que has ido agregando.  Revisa las cantidades y/o modifícalas si lo deseas.
+            <hr>
+        </div>
+        <div id="table-responsive" style="max-width:100%;max-height: 400px;overflow-y: auto;">
             {% if carrito %}
             <table class="table table-sm align-middle" style="max-width: 100%;">
                 <thead>
                     <tr>
-                        <th>Foto</th>
+                        <th>Imagen</th>
                         <th>Nombre del producto</th>
                         <th>Descripción</th>
-                        <th>Preparación</th>
-                        <th>Precio</th>
                         <th>Cantidad</th>
-                        <th>Subtotal</th>
                         <th>Acción</th>
                     </tr>
                 </thead>
@@ -23,30 +27,19 @@
                     {% csrf_token %}
                     {% for elemento in elementos %}
                     <tr>
-                        <td><img src="{{ elemento.producto.imagen.url }}" alt="{{ elemento.producto.nombre }}"
+                        <td><img src="{% if not elemento.producto.imagen %}{% static 'images/srv_lavanderia.jpeg' %}{% else %}{{ elemento.producto.imagen.url }}{% endif %}" alt="{{ elemento.producto.nombre }}"
                                 class="rounded img-thumbnail float-start" width="100px"></td>
-                        <td>{{ elemento.producto.nombre }}</td>
+                        <td>{{ elemento.producto.nombre_servicio }}</td>
                         <td>
-                            <p>{{ elemento.producto.descripcion }}</p>
+                            <p>{{ elemento.producto.descripcion_servicio }}</p>
                         </td>
-                        <td>
-                            <p class="fs-3 text-center">
-                                {% if elemento.producto.liviano == True %}
-                                <i class="fa-solid fa-l"></i>
-                                {% else %}
-                                <i class="fa-solid fa-t"></i>
-                                {% endif %}
-                            </p>
-                        </td>
-                        <td>{{ elemento.producto.precio }}</td>
                         <td>{{ elemento.cantidad }}</td>
-                        <td>{{ elemento.subtotal }}</td>
                         <td>
-                            <a href="{% url 'AumentarCantidad' elemento.id %}"><i
+                            <a href="{% url 'aumentar_item' elemento.id %}?vista={{vista}}#carrito"><i
                                     class="fa-solid fa-circle-plus fs-3 text-success"></i></a>
-                            <a href="{% url 'DisminuirCantidad' elemento.id %}"><i
+                            <a href="{% url 'disminuir_item' elemento.id %}?vista={{vista}}#carrito"><i
                                     class="fa-solid fa-circle-minus fs-3 text-danger"></i></a>
-                            <a href="{% url 'EliminarLinea' elemento.id %}"><i
+                            <a href="{% url 'eliminar_linea' elemento.id %}?vista={{vista}}#carrito"><i
                                     class="fa-solid fa-trash-can fs-3 text-dark"></i></a>
                         </td>
                     </tr>
@@ -60,18 +53,24 @@
             </div>
         </div>
         {% endif %}
-        <div>
-            <h3 class="text-end">Total <i class="fa-solid fa-receipt"></i>: {{ total }}</h3>
-        </div>
-        <div class="container">
-            {% if carrito %}<button type="button" class="btn btn-outline-danger btn-lg m-2" data-bs-toggle="modal"
-                data-bs-target="#Vaciar"><i class="fa-solid fa-trash-arrow-up"></i> Eliminar Carrito</button>{% endif %}
-            <a href="{% url 'Inicio' %}#Menu"><button type="button" class="btn btn-outline-primary btn-lg m-2"><i
-                        class="fa-solid fa-cart-arrow-down"></i> Seguir Comprando</button></a>
-            {% if carrito %}<button type="button" class="btn btn-outline-success btn-lg m-2" data-bs-toggle="modal"
-                data-bs-target="#Pedir"><i class="fa-solid fa-bag-shopping"></i> Realizar Pedido</button>{% endif %}
-        </div>
     </div>
+    <div>
+        <h3 class="text-end">Total <i class="fa-solid fa-receipt"></i>: {{ total }}</h3>
+    </div>
+    <div class="text-end">
+        {% if carrito %}
+        <a href="{% url 'vaciar_carrito' %}">
+            <button type="button" class="btn btn-outline-danger btn-lg m-2" data-bs-toggle="modal"
+            data-bs-target="#Vaciar"><i class="fa-solid fa-trash-arrow-up"></i> Eliminar Carrito</button>
+        </a>
+        {% endif %}
+        
+        <a href="{% url vista %}#carrito"><button type="button" class="btn btn-outline-primary btn-lg m-2"><i
+                    class="fa-solid fa-cart-arrow-down"></i> Cargar más...</button></a>
+        {% if carrito %}<button type="button" class="btn btn-outline-success btn-lg m-2" data-bs-toggle="modal"
+            data-bs-target="#Pedir"><i class="fa-solid fa-bag-shopping"></i> Realizar Solicitud</button>{% endif %}
+    </div>
+
 </section>
 
 

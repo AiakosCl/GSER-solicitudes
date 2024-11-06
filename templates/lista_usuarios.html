@@ -12,7 +12,7 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent3">
             <form class="d-flex ms-auto me-0" role="search" action="{% url 'FiltroUsuarios' %}#usuarios" method="GET">
                 <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" name="q">
-                <button class="btn btn-outline-dark" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <button class="btn btn-outline-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
         </div>
     </div>
@@ -27,7 +27,6 @@
                         <th>Tipo</th>
                         <th>Nombre de usuario</th>
                         <th>Nombre</th>
-                        <th>Apellido</th>
                         <th>Staff</th>
                         <th>Activo</th>
                         <th>Acción</th>
@@ -50,8 +49,7 @@
                             {% endif %}
                         </td>
                         <td>{{ usuario.username }}</td>
-                        <td>{{ usuario.first_name }}</td>
-                        <td>{{ usuario.last_name }}</td>
+                        <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
                         <td>
                             {% if usuario.is_staff %}
                             <p class="fs-3 text-center"><i class="fa-regular fa-circle-check"></i></p>
@@ -67,8 +65,8 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{% url 'EditarUsuario' usuario.id %}#usuarios"><i class="fa-solid fa-pen-to-square fs-3"></i></a>
-                            <a href="{% url 'EliminarUsuario' usuario.id %}#usuarios"><i class="fa-solid fa-trash-can fs-3"></i></a>
+                            <a href="{% url 'EditarUsuario' usuario.id %}#usuarios" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Editar información..."><i class="fa-solid fa-pen-to-square fs-3"></i></a>
+                            <a href="{% url 'EliminarUsuario' usuario.id %}#usuarios" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Eliminar usuario..."><i class="fa-solid fa-trash-can fs-3 text-danger"></i></a>
                         </td>
                     </tr>
                     {% empty %}

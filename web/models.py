@@ -17,7 +17,7 @@ class Gerencia(models.Model): #Maesto de Gerencias y Centros de Costos
     aprobador = models.EmailField()
 
     def __str__(self) -> str:
-        return f'[{self.descripcion}] - {self.ceco} - {self.aprobador}'
+        return f'[{self.ceco}] - {self.descripcion}'
 
 class Especialidad(models.Model): #Maestro de especialidades de mantención (Electricidad, Plomería, etc.)
     especialidad = models.CharField(max_length=50, unique=True, null=False, blank=False)
@@ -137,18 +137,15 @@ class SalasCambio(models.Model): #Mantenedor de Casa de Cambios existentes
         return f'[{self.nombre_sala}] - Area: {self.area}'
     
 class Lockers(models.Model): #Mantenedor de Lockers a asignar al usuario.
-    LUGAR_TRABAJO= (
-        ('Saladillo', 'Saladillo'),
-        ('SPMFC', 'SPMFC'),
-        ('Nivel_16', 'Nivel_16'),
-        ('Nivel_19', 'Nivel_19'),
-        ('Concentradora', 'Concentradora'),
-        ('Mina_Rajo', 'Mina_Rajo'),
+    SEXO = (
+        ('M', 'Masculino'),
+        ('F', 'Femenino'),
     )
     numero_locker = models.PositiveIntegerField(null=False, blank=False)
-    nombre_locker = models.CharField(max_length=5, null=False, blank=False)
+    nombre_locker = models.CharField(max_length=5, null=True, blank=True)
     usuario_locker = models.ForeignKey(Usuario, on_delete=models.CASCADE, null=True, blank=True)
-    lugar_trabajo = models.CharField(max_length=20, choices=LUGAR_TRABAJO, null=False, blank=False)
+    genero = models.CharField(max_length=1, choices=SEXO, null=True, blank=True)
+    lugar_trabajo = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, blank=True)
     casacambio= models.ForeignKey(SalasCambio, on_delete=models.CASCADE, null=False, blank=False)
 
     class Meta:
@@ -156,12 +153,12 @@ class Lockers(models.Model): #Mantenedor de Lockers a asignar al usuario.
         verbose_name_plural = "Lockers"
     
     def __str__(self):
-        return f'[{self.nombre_locker}] - Casa de Cambio: {self.casacambio} - Usuario: {self.usuario_locker}'
+        return self.nombre_locker
     
     def save(self, *args, **kwargs):
         # Generar el nombre del locker a partir del nombre de la sala de cambio y el número de locker
         if not self.nombre_locker:  # Si el nombre no ha sido asignado manualmente
-            self.nombre_locker = f'{self.casacambio.nombre_sala[:2].upper()}-{self.numero_locker}'
+            self.nombre_locker = f'{self.casacambio.nombre_sala[:3].upper()}-{self.numero_locker}'
         
         super().save(*args, **kwargs)
 
@@ -175,6 +172,7 @@ class AreaServicio(models.Model): #Mantenedor de áreas de servicios (Alimentaci
     descripcion = models.TextField(blank=False, null=False, default="Sin info")
     administrador = models.EmailField(blank=False, null=False)
     vista = models.CharField(max_length=50, default='mantencion', blank=False, null=False)
+    icono = models.CharField(max_length=50, null=True, blank=True)
 
     class Meta:
         verbose_name = "Area de Servicio"

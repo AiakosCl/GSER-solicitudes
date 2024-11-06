@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.apps import apps
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.db import transaction
 from django.http import JsonResponse
@@ -26,11 +26,44 @@ class Logout(LogoutView):
 # -- Funciones auxiliares -- #
 
 def index(request):
+    show_cart = request.GET.get('show_cart', False)
+    vista = request.GET.get('vista', False)
+    if not vista:
+        vista = 'inicio'
+
     if request.user.is_authenticated:
         areas_servicios = request.user.servicio_autorizado.all().order_by('id')
+        carrito = Carrito.objects.filter(usuario=request.user).first()
+        elementos = ItemsCarrito.objects.filter(carrito=carrito)
+        
+        try:
+            locker = Lockers.objects.get(usuario_locker=request.user)
+        except Lockers.DoesNotExist:
+            locker = None
+
+        total = 0
+        for elemento in elementos:
+            try:
+                elemento.subtotal = elemento.producto.precio * elemento.cantidad
+            except:
+                elemento.subtotal = 0
+
+            vista=elemento.producto.area_servicio.vista
+            print(vista)
+            total += elemento.subtotal
+
+        return render(request, 'index.html', {
+            'areas': areas_servicios, 
+            'vista':vista, 
+            'carrito':carrito, 
+            'elementos':elementos, 
+            'total':total,
+            'show_cart':show_cart,
+            'locker':locker
+        })
     else:
         areas_servicios = AreaServicio.objects.all().order_by('id')
-    return render(request, 'index.html', {'areas': areas_servicios})
+    return render(request, 'index.html', {'areas': areas_servicios, 'vista':vista, 'show_cart':show_cart})
 
 #Vista Trabajo Usuarios
 def nuevo_usuario(request):
@@ -151,6 +184,7 @@ def eliminar_usuario(request, usuario_id):
     else:
         messages.warning(request,f'{iconos["mal"]}\tUsted no está autorizado para esta operación')
         return redirect('inicio')
+
 @login_required    
 def filtrarUsuarios(request):
     termino = request.GET.get('q')
@@ -228,53 +262,67 @@ def asignar_locker(request):
 
 @login_required
 def agregar_al_carrito(request, producto_id):
-    producto = get_object_or_404(Servicio, id_producto = producto_id)
+    producto = get_object_or_404(Servicio, id = producto_id)
     carrito, created = Carrito.objects.get_or_create(usuario = request.user)
     elemento, created = ItemsCarrito.objects.get_or_create(carrito=carrito, producto=producto)
+    servicio = producto.area_servicio_id
+    vista = AreaServicio.objects.get(id=servicio).vista
 
     if not created:
         elemento.cantidad += 1
         elemento.save()
 
-    return redirect('ver_carrito')
+    messages.success(request, f'{iconos["ok"]}\t{producto.nombre_servicio} se agregó al carrito')
+    return redirect(reverse('inicio')+ f'?vista={vista}&show_cart=True')
+    # return redirect(reverse('ver_carrito')+ f'?vista={vista}')
 
 # Muestra el carrito
 @login_required
 def ver_carrito(request):
+    vista = request.GET.get('vista')
     carrito = Carrito.objects.filter(usuario=request.user).first()
     elementos = ItemsCarrito.objects.filter(carrito=carrito)
-
     total = 0
     for elemento in elementos:
-        elemento.subtotal = elemento.producto.precio * elemento.cantidad
+        try:
+            elemento.subtotal = elemento.producto.precio * elemento.cantidad
+
+        except:
+            elemento.subtotal = 0
+
         total += elemento.subtotal
 
-    return render(request, 'carrito.html', {'carrito':carrito, 'elementos':elementos, 'total':total})
+    return render(request, 'carrito_offcanva.html', {'carrito':carrito, 'elementos':elementos, 'total':total, 'vista':vista})
 
 # Eliminar una línea del Carrito
 @login_required
 def eliminar_item_carrito(request, elemento_id):
+    vista = request.GET.get('vista')
     elemento = get_object_or_404(ItemsCarrito, id=elemento_id)
 
     if request.user == elemento.carrito.usuario:
         elemento.delete()
     
-    return redirect('ver_carrito')
+    messages.info(request, f'{iconos["mal"]}\tSe eliminó línea del carrito')
+    return redirect(reverse('inicio')+ f'?vista={vista}&show_cart=True')
+    #return redirect(reverse('ver_carrito')+ f'?vista={vista}')
 
 # Aumenta en 1 el pedido del item de la línea
 @login_required
 def aumentar_item(request, elemento_id):
+    vista = request.GET.get('vista')
     elemento = get_object_or_404(ItemsCarrito, id=elemento_id)
 
     if request.user == elemento.carrito.usuario:
         elemento.cantidad += 1
         elemento.save()
-    
-    return redirect('ver_carrito')
+    return redirect(reverse('inicio')+ f'?vista={vista}&show_cart=True')
+    #return redirect(reverse('ver_carrito')+ f'?vista={vista}')
 
 # Disminuye en 1 el pedido del item de la línea
 @login_required
 def disminuir_item(request, elemento_id):
+    vista = request.GET.get('vista')
     elemento = get_object_or_404(ItemsCarrito, id=elemento_id)
 
     if request.user == elemento.carrito.usuario:
@@ -285,7 +333,8 @@ def disminuir_item(request, elemento_id):
 
         elemento.save()
 
-    return redirect('ver_carrito')
+    return redirect(reverse('inicio')+ f'?vista={vista}&show_cart=True')
+    #return redirect(reverse('ver_carrito')+ f'?vista={vista}')
 
 # Varciar el registro en Carrito
 @login_required
@@ -293,7 +342,20 @@ def vaciar_carrito(request):
     carrito = Carrito.objects.filter(usuario=request.user).first()
     elementos = ItemsCarrito.objects.filter(carrito=carrito)
     carrito.delete()
+    messages.info(request, 'Se ha vaciado el carrito')
     return redirect('inicio')
+
+
+@login_required    
+def filtrar_articulos(request):
+    termino = request.GET.get('q')
+    articulos = Servicio.objects.all()
+
+    if termino:
+        articulos = articulos.filter(Q(nombre_servicio__icontains=termino))
+    
+    return render(request, 'lavanderia.html',{'servicios':articulos})
+
 
 # Realizar el pedido
 @login_required
@@ -493,7 +555,17 @@ def hoteleria(request):
 
 @login_required
 def lavanderia(request):
-    return render(request, 'lavanderia.html')
+    productos = Servicio.objects.filter(area_servicio = 4)
+    vista = "lavanderia"
+    
+    try:
+        locker = Lockers.objects.get(usuario_locker=request.user)
+    except Lockers.DoesNotExist:
+        #Se debe hacer una rutina para permitir la asignación de un locker para el usuario
+        messages.error(request, f'{iconos["mal"]}\tDebe tener asignado un locker para utilizar este servicio.')
+        return redirect('inicio')
+    
+    return render(request, 'lavanderia.html', {'servicios':productos, 'vista':vista, 'locker':locker})
 
 @login_required
 def mantencion(request):

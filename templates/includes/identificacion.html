@@ -1,0 +1,34 @@
+<table class="table table-sm table-striped">
+    <tr>
+        <td>RUT:</td>
+        <td>{{user.rut}}</td>
+        <td>SAP: </td>
+        <td>{{user.sap}}</td>
+    </tr>
+    <tr>
+        <td>Nombre: </td>
+        <td>{{user.first_name}} {{user.last_name}}</td>
+        <td>CECO: </td>
+        <td>{{user.ceco_id}}</td>
+    </tr>
+    <tr>
+        <td>Email: </td>
+        <td>{{user.email}}</td>
+        <td>Celular: </td>
+        <td>{{user.telefono}}</td>
+    </tr>
+    <tr>
+        <td>Locker: </td>
+        <td>
+            {% if locker %}
+                {{ locker.nombre_locker }}
+            {% else %}
+                No tiene locker asignado
+            {% endif %}
+        </td>
+        <td>Fecha de solicitud:</td>
+        <td>
+            <p id="fecha" class="text-danger fs-6"></p>
+        </td>
+    </tr>
+</table>
