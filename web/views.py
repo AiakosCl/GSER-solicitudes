@@ -231,32 +231,32 @@ def ticket_lavanderia(request):
 @login_required
 def asignar_locker(request):
     if request.method == 'POST':
-        numero_locker = request.POST.get('numero_locker')
-        lugar_trabajo = request.POST.get('lugar_trabajo')
-        casacambio = request.POST.get('casacambio')
+        formulario = LockerAssignmentForm(request.POST)
+        if formulario.is_valid():
+            numero_locker = formulario.cleaned_data['numero_locker']
+            lugar_trabajo = formulario.cleaned_data['lugar_trabajo']
+            casacambio = formulario.cleaned_data['casacambio']
 
-        try:
-            locker_asignado = Lockers.objects.get(
-                numero_locker = numero_locker,
-                lugar_trabajo = lugar_trabajo,
-                casacambio_id = casacambio
-            )
-            if locker_asignado.usuario_locker is None:
-                locker_asignado.usuario_locker = request.user
-                locker_asignado.save()
-                messages.success(request, 'Locker asignado correctamente')
-                return redirect('ticket_lavanderia')
-            else:
-                messages.error(request, 'Locker ya asignado')
-        
-        except Lockers.DoesNotExist:
-            messages.error(request, "Locker no encontrado o incorrecto")
-            locker_asignado = None
+            try:
+                # Verificamos si el locker está disponible
+                locker_asignado = Lockers.objects.get(
+                    numero_locker=numero_locker,
+                    lugar_trabajo=lugar_trabajo,
+                    casacambio=casacambio
+                )
+                if locker_asignado.usuario_locker is None:
+                    locker_asignado.usuario_locker = request.user
+                    locker_asignado.save()
+                    messages.success(request, f'{iconos["ok"]}\tLocker asignado correctamente')
+                    return redirect('lavanderia')
+                else:
+                    messages.error(request, f'{iconos["mal"]}\tLocker ya está asignado a otro usuario')
+            except Lockers.DoesNotExist:
+                messages.error(request, f'{iconos["mal"]}\tLocker no encontrado o incorrecto')
+    else:
+        formulario = LockerAssignmentForm()
 
-        if locker_asignado is None:
-            messages.warning(request, 'No hay lockers disponibles para asignar')
-
-    return render(request, 'asignar_locker.html')
+    return render(request, 'asignar_locker.html', {'formulario': formulario})
 
 # ---- Trabajo con Carrito ------ #
 
@@ -563,7 +563,7 @@ def lavanderia(request):
     except Lockers.DoesNotExist:
         #Se debe hacer una rutina para permitir la asignación de un locker para el usuario
         messages.error(request, f'{iconos["mal"]}\tDebe tener asignado un locker para utilizar este servicio.')
-        return redirect('inicio')
+        return redirect('asignar_locker')
     
     return render(request, 'lavanderia.html', {'servicios':productos, 'vista':vista, 'locker':locker})
 

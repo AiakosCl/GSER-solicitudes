@@ -136,3 +136,14 @@ class ContactoForm(forms.ModelForm):
                 'required': 'Por favor, danos más detalle. Nos ayudará a entender mejor tu caso.',
             },
         }
+
+class LockerAssignmentForm(forms.Form):
+    numero_locker = forms.IntegerField(label="Número de Locker")
+    lugar_trabajo = forms.ModelChoiceField(
+        queryset=Area.objects.all(), 
+        label="Lugar de Trabajo"
+    )
+    casacambio = forms.ModelChoiceField(
+        queryset=SalasCambio.objects.all(),
+        label="Casa de Cambio"
+    )

@@ -26,20 +26,29 @@
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
-            <div class="overlay row" style="width: 80%;">
+            <div class="overlay row" style="width: 100%;">
                 <div id="Contendor-cabecera overlay" class="col-md-6" style="width:100%;">
                     <div class="d-flex h-100">
                         <div class="text-white">
                             <img src="{% static 'images/Logo2-transparent.png' %}" alt="" width="300px" class="d-none d-md-block">
-                            {% if user.is_authenticated %}<p><span class="mb-3 display-4 text-light typing-text">Bienvenido,
-                                {{user.first_name}}</span></p>{% endif %}
+                            {% if user.is_authenticated %}
+                                <p>
+                                    <span class="mb-3 display-4 text-light typing-text">
+                                        Bienvenido, {{user.first_name}}
+                                    </span>
+                                </p>
+                            {% endif %}
                             <p class="d-md-block">
                                 <span
                                 class="{% if user.is_authenticated %}display-5 connected typing-text{% else %}text-light display-3 typing-text{% endif %}">
-                                Somos la Superintendencia de Servicios a las Personas.</span>
+                                Somos la Superintendencia de Servicios a las Personas.
+                                </span>
                             </p>
                             <p class="d-md-block">
-                                <span class="text-light display-6 typing-text">División Andina</span>
+                                <span 
+                                class="text-light display-6 typing-text">
+                                División Andina
+                                </span>
                             </p>
                             <div class="d-md-block">
                                 <a data-mdb-ripple-init class="btn btn-outline-light btn-lg m-2" href="{% url 'contacto' %}" role="button"
