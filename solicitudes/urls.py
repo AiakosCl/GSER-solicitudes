@@ -51,4 +51,6 @@ urlpatterns = [
     path('servicios/mantencion/', mantencion, name='mantencion'),
     path('servicios/lavanderia/', lavanderia, name='lavanderia'),
     path('servicios/transporte/', transporte, name='transporte'),
+    path('lockers/cargar_casas/<int:area_id>/', cargar_casascambio, name='cargar_casacambio'),
+    path('lockers/cargar_lockers/<int:casacambio_id>/', cargar_lockers, name='cargar_lockers'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

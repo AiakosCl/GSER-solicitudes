@@ -230,6 +230,7 @@ def ticket_lavanderia(request):
 
 @login_required
 def asignar_locker(request):
+    areas = Area.objects.all()
     if request.method == 'POST':
         formulario = LockerAssignmentForm(request.POST)
         if formulario.is_valid():
@@ -255,8 +256,23 @@ def asignar_locker(request):
                 messages.error(request, f'{iconos["mal"]}\tLocker no encontrado o incorrecto')
     else:
         formulario = LockerAssignmentForm()
+    
+    contexto = {
+        'formulario':formulario,
+        'areas':areas
+    }
 
-    return render(request, 'asignar_locker.html', {'formulario': formulario})
+    return render(request, 'asignar_locker.html', contexto)
+
+def cargar_casascambio(request, area_id):
+    casas = SalasCambio.objects.filter(area=area_id).values('id', 'nombre_sala')
+    return JsonResponse(list(casas), safe=False)
+
+def cargar_lockers(request, casacambio_id):
+    lockers = Lockers.objects.filter(casacambio=casacambio_id, usuario_locker=None).values('id', 'numero_locker')
+    return JsonResponse(list(lockers), safe=False)
+
+
 
 # ---- Trabajo con Carrito ------ #
 

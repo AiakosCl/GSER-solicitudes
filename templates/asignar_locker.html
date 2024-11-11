@@ -21,33 +21,6 @@
                     <small>{% include 'includes/identificacion.html' %}</small>
                     <hr>
                     <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="numero_locker" name="numero_locker" placeholder="Número de locker" value="{{ formulario.numero_locker.value|default_if_none:'' }}">
-                        <label for="numero_locker" class="form-label">Número de Locker:</label>
-                        {% if formulario.numero_locker.errors %}
-                            <div class="alert alert-warning" role="alert">
-                            {% for error in formulario.numero_locker.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="form-floating mb-3">
-                        <select class="form-select" id="genero" name="genero">
-                            {% for key, value in formulario.genero.field.choices %}
-                            <option value="{{ key }}" {% if formulario.genero.value == key %}selected{% endif %}>{{ value }}</option>
-                            {% endfor %}
-                        </select>
-                        <label for="genero" class="form-label">Género:</label>
-                        {% if formulario.genero.errors %}
-                            <div class="alert alert-warning" role="alert">
-                            {% for error in formulario.genero.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-floating mb-3">
                         <select class="form-select" id="lugar_trabajo" name="lugar_trabajo" required>
                             {% for area in areas %}
                             <option value="{{ area.id }}" {% if formulario.lugar_trabajo.value == area.id %}selected{% endif %}>{{ area.nombre_area }}</option>
@@ -62,12 +35,9 @@
                             </div>
                         {% endif %}
                     </div>
-
                     <div class="form-floating mb-3">
                         <select class="form-select" id="casacambio" name="casacambio" required>
-                            {% for sala in salas_cambio %}
-                            <option value="{{ sala.id }}" {% if formulario.casacambio.value == sala.id %}selected{% endif %}>{{ sala.nombre_sala }}</option>
-                            {% endfor %}
+                            <option value="" disabled selected>Seleccione una Casa de Cambio</option>
                         </select>
                         <label for="casacambio" class="form-label">Casa de Cambio:</label>
                         {% if formulario.casacambio.errors %}
@@ -78,7 +48,17 @@
                             </div>
                         {% endif %}
                     </div>
-
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="numero_locker" name="numero_locker" placeholder="Número de locker" value="{{ formulario.numero_locker.value|default_if_none:'' }}">
+                        <label for="numero_locker" class="form-label">Número de Locker:</label>
+                        {% if formulario.numero_locker.errors %}
+                            <div class="alert alert-warning" role="alert">
+                            {% for error in formulario.numero_locker.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
                     <div class="modal-footer">
                         <a href="{% url 'inicio' %}">
                             <button type="button" class="btn btn-outline-danger btn-lg m-2 cancelar" data-bs-dismiss="modal" style="width: 100px;"><i class="fa-solid fa-xmark fs-2"></i></button>
@@ -98,4 +78,36 @@
         nuevoLockerModal.show();
     });
 </script>
+
+<script> // Carga Casas de cambio
+    document.getElementById('lugar_trabajo').addEventListener('change', function() {
+        var lugar_trabajo_id = this.value;
+        console.log(lugar_trabajo_id);
+        var casas_cambio = document.getElementById('casacambio');
+        casas_cambio.innerHTML = '<option value="">Seleccione una Casa de Cambio</option>';
+        casas_cambio.disabled = true;
+
+        if (lugar_trabajo_id) {
+            fetch('/lockers/cargar_casas/' + lugar_trabajo_id)
+                .then(response => response.json())
+                .then(data => {
+                    casas_cambio.disabled = false;
+                    data.forEach(function(casa) {
+                        var option = document.createElement('option');
+                        option.value = casa.id;
+                        option.textContent = casa.nombre_sala;
+                        casas_cambio.appendChild(option);
+                    });
+                    casas_cambio.dataset.lugar_trabajo_id= lugar_trabajo_id;
+                });
+        }
+        
+    });
+</script> 
+
+<script> // Carga Locker disponbibles
+
+</script> 
+
+
 {% endblock %}

@@ -55,10 +55,16 @@ class MAE(models.Model): #Maestro de Personal de dónde se obtendrán los datos 
         return f'[{self.ceco_id}] - {self.nombre} - {self.cargo}'
 
 class Usuario(AbstractUser): #Maestro de usuarios, que obtendrá la información desde un Maestro de Personal.
+    GENERO = (
+        ('M', 'Masculino'),
+        ('F', 'Femenino'),
+    )
+
     email = models.EmailField(unique=True)
     rut = models.CharField(max_length=10, unique=True)
     ceco_id = models.ForeignKey(Gerencia, on_delete=models.CASCADE, default="ADM01")
     telefono = models.CharField(max_length=20)
+    genero = models.CharField(max_length=1, choices=GENERO, null=True, blank=True, default="M")
     tipo_usuario = models.ForeignKey(Perfiles, on_delete=models.CASCADE, default=3)
     servicio_autorizado = models.ManyToManyField('AreaServicio', blank=True)
     
