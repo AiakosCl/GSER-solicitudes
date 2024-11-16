@@ -18,7 +18,7 @@
                 <form method="post" enctype="multipart/form-data" class="row g-3 mx-3">
                     {% csrf_token %}
                     <h2 class="text-light text-end">Identificación del solicitante</h2>
-                    <small>{% include 'includes/identificacion.html' %}</small>
+                    <small>{% include 'includes/id.html' %}</small>
                     <hr>
                     <div class="form-floating mb-3">
                         <select class="form-select" id="lugar_trabajo" name="lugar_trabajo" required>
@@ -88,18 +88,30 @@
         casas_cambio.disabled = true;
 
         if (lugar_trabajo_id) {
-            fetch('/lockers/cargar_casas/' + lugar_trabajo_id)
+            fetch('/lockers/cargar_casas/'+ lugar_trabajo_id)
                 .then(response => response.json())
                 .then(data => {
                     casas_cambio.disabled = false;
-                    data.forEach(function(casa) {
+                    if(data.length > 0){
+                        data.forEach(function(casa) {
                         var option = document.createElement('option');
                         option.value = casa.id;
                         option.textContent = casa.nombre_sala;
                         casas_cambio.appendChild(option);
                     });
+                    } else {
+                        var messageOption = document.createElement('option');
+                        messageOption.value = '';
+                        messageOption.textContent = 'No hay casas de cambio disponibles para este lugar de trabajo.';
+                        casas_cambio.appendChild(messageOption);
+                    }
+                    
                     casas_cambio.dataset.lugar_trabajo_id= lugar_trabajo_id;
-                });
+                })
+                .catch(error => console.error('Error al cargar las casas de cambio:', error));
+        } else {
+            casas_cambio.innerHTML = '<option value="">Selecciones una Lugar de Trabajo</option>';
+            casas_cambio.disabled = true;
         }
         
     });

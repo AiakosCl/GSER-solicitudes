@@ -1,0 +1,61 @@
+<!-- vista reducida -->
+<table class="d-block d-md-none table table-sm table-striped align-middle">
+    <tr>
+        <td>RUT:</td>
+        <td>{{ user.rut }}</td>
+    </tr>
+    <tr>
+        <td>SAP:</td>
+        <td>{{ user.sap }}</td>
+    </tr>
+    <tr>
+        <td>Nombre:</td>
+        <td>{{ user.first_name }} {{ user.last_name }}</td>
+    </tr>
+    <tr>
+        <td>Email:</td>
+        <td>{{ user.email }}</td>
+    </tr>
+    <tr>
+        <td>Celular:</td>
+        <td>{{ user.telefono }}</td>
+    </tr>
+    <tr>
+        <td>Fecha de solicitud:</td>
+        <td colspan="3" id="fecha" class="text-danger fs-6"></td>
+    </tr>
+</table>
+
+
+<!-- Vista completa -->
+<table class="d-none d-md-block table table-sm table-striped align-middle">
+    <tr>
+        <td rowspan="4" class="text-center align-middle" style="font-size: clamp(16px, 24px, 24px); font-weight: bold;">
+            {% if locker %}
+                {{ locker.nombre_locker }}
+            {% else %}
+                No tiene locker asignado
+            {% endif %}
+        </td>
+        <td>RUT:</td>
+        <td>{{ user.rut }}</td>
+        <td>SAP:</td>
+        <td>{{ user.sap }}</td>
+    </tr>
+    <tr>
+        <td>Nombre:</td>
+        <td>{{ user.first_name }} {{ user.last_name }}</td>
+        <td>CECO:</td>
+        <td>{{ user.ceco_id }}</td>
+    </tr>
+    <tr>
+        <td>Email:</td>
+        <td>{{ user.email }}</td>
+        <td>Celular:</td>
+        <td>{{ user.telefono }}</td>
+    </tr>
+    <tr>
+        <td>Fecha de solicitud:</td>
+        <td colspan="3" id="fecha" class="text-danger fs-6"></td>
+    </tr>
+</table>
