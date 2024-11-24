@@ -9,28 +9,28 @@
             <h1 class="text-center py-5"><i class="fa-solid fa-hotel"></i> Nuestros Servicios</h1>
             <ul class="properties-filter">
                 <li>
-                    <a class="is_active" href="#!" data-filter="*">Mostrar todo</a>
+                    <a class="filtro is_active" href="#!" data-filter="*">Mostrar todo</a>
                 </li>
                 <li>
-                    <a href="#!" data-filter=".alm">Alimentación</a>
+                    <a class="filtro" href="#!" data-filter=".alm">Alimentación</a>
                 </li>
                 <li>
-                    <a href="#!" data-filter=".hot">Hotelería</a>
+                    <a class="filtro" href="#!" data-filter=".hot">Hotelería</a>
                 </li>
                 <li>
-                    <a href="#!" data-filter=".man">Mantención</a>
+                    <a class="filtro" href="#!" data-filter=".man">Mantención</a>
                 </li>
                 <li>
-                    <a href="#!" data-filter=".lav">Lavandería</a>
+                    <a class="filtro" href="#!" data-filter=".lav">Lavandería</a>
                 </li>
                 <li>
-                    <a href="#!" data-filter=".tra">Transporte</a>
+                    <a class="filtro" href="#!" data-filter=".tra">Transporte</a>
                 </li>
                 <li>
-                    <a href="#!" data-filter=".otr">Otros</a>
+                    <a class="filtro" href="#!" data-filter=".otr">Otros</a>
                 </li>
             </ul>
-            <div class="properties-box row gx-5">
+            <div class="properties-box">
                 {% for areaservicio in areas %}
                 <div
                     class="card-3d properties-items col-12 col-lg-4 col-md-6 mb-30 {% if areaservicio.id == 1 %}alm{% elif areaservicio.id == 2 %}hot{% elif areaservicio.id == 3 %}man{% elif areaservicio.id == 4 %}lav{% elif areaservicio.id == 5 %}tra{% else %}otr{% endif %}">

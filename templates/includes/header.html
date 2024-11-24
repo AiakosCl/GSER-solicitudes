@@ -26,31 +26,31 @@
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
-            <div class="overlay row" style="width: 100%;">
-                <div id="Contendor-cabecera overlay" class="col-md-6" style="width:100%;">
-                    <div class="d-flex h-100">
+            <div class="overlay row primera">
+                <div id="Contendor-cabecera overlay">
+                    <div>
                         <div class="text-white">
                             <img src="{% static 'images/Logo2-transparent.png' %}" alt="" width="300px" class="d-none d-md-block">
                             {% if user.is_authenticated %}
-                                <p>
-                                    <span class="mb-3 display-4 text-light typing-text">
+                                <div class="segunda">
+                                    <span class="mb-3 text-light">
                                         Bienvenido, {{user.first_name}}
                                     </span>
-                                </p>
+                                </div>
                             {% endif %}
-                            <p class="d-md-block">
+                            <div class="segunda d-md-block">
                                 <span
-                                class="{% if user.is_authenticated %}display-5 connected typing-text{% else %}text-light display-3 typing-text{% endif %}">
-                                Somos la Superintendencia de Servicios a las Personas.
+                                class="{% if user.is_authenticated %}connected{% else %}text-light{% endif %}">
+                                Somos la SSP
                                 </span>
-                            </p>
-                            <p class="d-md-block">
+                            </div>
+                            <div class="tercera d-md-block">
                                 <span 
-                                class="text-light display-6 typing-text">
+                                class="text-light">
                                 División Andina
                                 </span>
-                            </p>
-                            <div class="d-md-block">
+                            </div>
+                            <div class="tercera d-md-block">
                                 <a data-mdb-ripple-init class="btn btn-outline-light btn-lg m-2" href="{% url 'contacto' %}" role="button"
                                 rel="nofollow">Contacto</a>
                                 <a data-mdb-ripple-init class="btn btn-outline-light btn-lg m-2" href="#contenido"
