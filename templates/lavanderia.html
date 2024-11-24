@@ -7,16 +7,16 @@
 <div class="modal fade" id="nuevoProductoModal" tabindex="-1" aria-labelledby="nuevoProductoModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content" style="background-color: rgba(255, 255, 255);">
+        <div class="modal-content" style="background-color: rgba(255, 255, 255)!important;">
             <div class="modal-header">
                 <h1 class="modal-title text-dark">Lavanderia</h1>
                 <a href="{% url 'inicio' %}#contenido"><button type="button" class="btn-close" data-bs-dismiss="modal"
                         aria-label="Close"></button></a>
             </div>
-            <div class="modal-body ms-0 me-0">
+            <div class="modal-body row g-3 mx-3">
                 <div class="table-responsive">
-                    <div class="row">
-                        <div class="col-12">
+                    <div>
+                        <div>
                             <h2 class="text-start" style="width: 100%;color:#f35525;">Identificación solicitante</h2>
                             <hr>
                             {% include 'includes/id.html' %}

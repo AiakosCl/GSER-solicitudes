@@ -7,19 +7,19 @@
 
 <!-- Modal -->
 <div class="modal fade" id="nuevoLockerModal" tabindex="-1" aria-labelledby="nuevoLockerModalLabel" aria-hidden="true" style="background-color: rgba(255,255,255,0.7);">
-    <div class="modal-dialog modal-md" sytle="background-color: white;">
+    <div class="modal-dialog modal-lg" sytle="background-color: white;">
         <div class="modal-content" >
             <div class="modal-header">
                 <h1 class="modal-title">Registro de Locker</h1>
                 <a href="{% url 'inicio' %}#contenido"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></a>
             </div>
-            <div class="modal-body">
+            <div class="modal-body row g-3 mx-3">
                 <!-- Formulario para ingresar nuevo locker -->
-                <form method="post" enctype="multipart/form-data" class="row g-3 mx-3">
+                <h2 class="text-light text-start">Identificación del solicitante</h2>
+                {% include 'includes/id.html' %}
+                <hr>
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <h2 class="text-light text-end">Identificación del solicitante</h2>
-                    <small>{% include 'includes/id.html' %}</small>
-                    <hr>
                     <div class="form-floating mb-3">
                         <select class="form-select" id="lugar_trabajo" name="lugar_trabajo" required>
                             {% for area in areas %}
