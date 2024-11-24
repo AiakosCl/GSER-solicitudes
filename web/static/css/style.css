@@ -431,6 +431,7 @@ img {
     color: #f35525;
 }
 
+<<<<<<< HEAD
 .caja {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -444,14 +445,40 @@ img {
 .box {
     background-color: #06bb66;
     color: white;
+=======
+/* Estilo para Tabla ID */
+
+.tabla_id {	
+    display: grid;
+    grid-template-columns: 30% 1fr;
+    grid-template-rows: auto;
+    grid-gap: 5px;
+    width:100%;
+    margin:clamp(10px, 5%, 1280px) auto;
+    font-size:clamp(12px, 2rem, 48px);
+    
+}
+
+.celdas {	
+    background-color: white; 
+    color:black;
+>>>>>>> d8d3176cd12683cdbda0c9a60f942b61aa33d66a
     border-radius: 10px;
     padding: 20px;
     text-align: center;
+    align-items: center;
 }
 
-.box1 {
-    grid-row: span 2;
+.celda1 {
+    grid-row: span 3;
+    max-width: min-content;
 }
+
+.celda2 {
+    grid-row: span 2;
+    width: fit-content;
+}
+<<<<<<< HEAD
 
 .box2 {
     grid-column: span 2
@@ -461,3 +488,5 @@ img {
     filter: blur(5px);
     opacity: 0.5;
 }
+=======
+>>>>>>> d8d3176cd12683cdbda0c9a60f942b61aa33d66a
