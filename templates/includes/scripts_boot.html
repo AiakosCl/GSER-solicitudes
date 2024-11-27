@@ -15,7 +15,7 @@
 <script> // Script para obscurecer el navbar
     window.onscroll = function () {
         var navbar = document.querySelector('.navbar');
-        var dmenus = document.querySelectorAll('.dropdown-menu'); //Acá se está considerando que hay varios menus
+        var dmenus = document.querySelectorAll('.dropdown-menu'); //Acá se consideran los submenus (listas deplegables)
         if (window.scrollY > 100) {  // Cambia el valor 100 según la altura que consideres adecuada
             navbar.classList.add('outside-header');
             dmenus.forEach(function (dmenu) { // acá se aplicará a cada menu...
@@ -58,20 +58,27 @@
 </script>
 
 <script>  // Script para obtener y formatear la fecha del sistema
-    let fechaActual = new Date();
-    let dia = fechaActual.getDate();
-    let mes = fechaActual.getMonth() + 1;
-    let anio = fechaActual.getFullYear();
+    var fechaActual = new Date();
+    var dia = fechaActual.getDate();
+    var mes = fechaActual.getMonth() + 1;
+    var anio = fechaActual.getFullYear();
 
-    let fechaFormateada = dia + "/" + mes + "/" + anio;
+    var fechaFormateada = dia + "/" + mes + "/" + anio;
 
-    let elementoFecha = document.getElementById("fecha");
-    elementoFecha.textContent = fechaFormateada;
+    var FechaVistaReducida = document.getElementById("fecha-reducida");
+    var FechaVistaCompleta = document.getElementById("fecha-completa");
+    if (FechaVistaReducida) {
+        FechaVistaReducida.textContent = fechaFormateada;
+    };
+    if (FechaVistaCompleta) {
+        FechaVistaCompleta.textContent = fechaFormateada;
+    };
 </script>
 
+
 <script> // Script para activar Tooltips
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    var tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 </script>
 
 <script> // Script para activar Offcanvas en el caso que exista un carrito

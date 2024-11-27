@@ -72,7 +72,7 @@ class Usuario(AbstractUser): #Maestro de usuarios, que obtendrá la información
         verbose_name = "Usuario"
         verbose_name_plural = "Usuarios"
     def __str__(self):
-        return f'[{self.username}] - {self.last_name}, {self.first_name} {self.email}'
+        return f'{self.last_name}, {self.first_name} | {self.email}'
 
 class Tecnico(models.Model): #Mantenedor de Tecnicos por su especialidad para la asignación de tareas de mantención levantadas por el sistema.
     rut = models.CharField(max_length=10, primary_key=True)
@@ -185,7 +185,7 @@ class AreaServicio(models.Model): #Mantenedor de áreas de servicios (Alimentaci
         verbose_name_plural = "Areas de Servicio"
 
     def __str__(self):
-        return f'[{self.nombre_area}] - Administrador: {self.administrador}'
+        return self.nombre_area
 
 class Servicio(models.Model): #Acá se registrarán todos los servicios con detalle multilínea, como por ejemplo: Servicios de alimentación o lavandería, en dónde en una solicitud se puede especificar más de un servicio en una única solicitud.
     nombre_servicio = models.CharField(max_length=50, unique=True, null=False, blank=False)
@@ -295,6 +295,7 @@ class SolicitudBase(models.Model): #Para Registro de Solicitudes de sobrecupo ma
 
 class Carrito(models.Model): #Este carrito llevará el pedido de servicios que puedan ser multiples, como por ejemplo Servicios de Alimentación y/o la Lavendería.
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    area_servicio = models.ForeignKey(AreaServicio, on_delete=models.CASCADE, null=True, blank=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
@@ -312,7 +313,7 @@ class Pedido(SolicitudBase): #Acá se registrará el pedido multilínea y el tot
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self) -> str:
-        return f'Pedido #{self.id} - Usuario: {self.usuario.username}'
+        return self.id
 
 class DetallePedido(models.Model): #El pedido multilínea se registrará en el detalle del pedido.
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)

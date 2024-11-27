@@ -10,6 +10,7 @@ from django.db import transaction
 from django.http import JsonResponse
 from web.models import *
 from web.forms import *
+from datetime import datetime
 # Create your views here.
 
 iconos = {
@@ -279,7 +280,7 @@ def cargar_lockers(request, casacambio_id):
 @login_required
 def agregar_al_carrito(request, producto_id):
     producto = get_object_or_404(Servicio, id = producto_id)
-    carrito, created = Carrito.objects.get_or_create(usuario = request.user)
+    carrito, created = Carrito.objects.get_or_create(usuario = request.user, area_servicio = producto.area_servicio)
     elemento, created = ItemsCarrito.objects.get_or_create(carrito=carrito, producto=producto)
     servicio = producto.area_servicio_id
     vista = AreaServicio.objects.get(id=servicio).vista
@@ -358,8 +359,8 @@ def vaciar_carrito(request):
     carrito = Carrito.objects.filter(usuario=request.user).first()
     elementos = ItemsCarrito.objects.filter(carrito=carrito)
     carrito.delete()
-    messages.info(request, 'Se ha vaciado el carrito')
-    return redirect('inicio')
+    messages.warning(request, 'Se ha vaciado el carrito')
+    return redirect(reverse('inicio')+'#contenido')
 
 
 @login_required    
@@ -376,105 +377,56 @@ def filtrar_articulos(request):
 # Realizar el pedido
 @login_required
 def realizar_pedido(request):
+    # Obtiene el carrito del usuario actual
     carrito = Carrito.objects.filter(usuario=request.user).first()
+    if not carrito: #Verifica si existe un carrito
+        messages.error(request, f'{iconos["mal"]}\tNo existe carrito relacionado a este Usuario')
+        return redirect('/')
+
     elementos = ItemsCarrito.objects.filter(carrito=carrito)
-    
-    with transaction.atomic():
-        pedido = Pedido.objects.create(usuario=request.user, total=0)
+    if not elementos.exists(): #Verifica si el carro tiene elementos
+        messages.error(request, f'{iconos["mal"]}\tNo tienes artículos en el carrito.')
+        return redirect('/')
 
-        total = 0
-
-        for elemento in elementos:
-            subtotal = elemento.producto.precio * elemento.cantidad
-            total += subtotal
-
-            DetallePedido.objects.create(
-                pedido = pedido,
-                producto = elemento.producto,
-                cantidad = elemento.cantidad,
-                precio = elemento.producto.precio
+    try:
+        with transaction.atomic():
+            # Crear el pedido
+            pedido = Pedido.objects.create(
+                usuario=request.user,
+                fecha_creacion = datetime.now(),
+                area_servicio=carrito.area_servicio,  # Se obtiene el Id de servicio de la tabla Carrito
+                ceco=request.user.ceco_id,  # Asignar el CECO del usuario. Se obtiene de la Tabla Usuario
+                total=0,  # Inicialmente cero, se calculará más adelante
             )
 
+            total = 0
+
+            # Iterar sobre los elementos del carrito
+            for elemento in elementos:
+                subtotal = (elemento.producto.precio_servicio if elemento.producto.precio_servicio else 0) * elemento.cantidad
+                total += subtotal
+
+                # Crear detalle del pedido
+                DetallePedido.objects.create(
+                    pedido=pedido,
+                    producto=elemento.producto,
+                    cantidad=elemento.cantidad,
+                    precio=elemento.producto.precio_servicio
+                )
+
+            # Asignar el total calculado al pedido
             pedido.total = total
             pedido.save()
 
-    Correo = '''
-    # Armando el correo electrónico
-    asunto = f'Confirmación pedido: {carrito.id}'
-    mensaje_html = render_to_string('confirmacion_pedido.html', {'elementos':elementos})
-    mensaje_texto = strip_tags(mensaje_html)
+        # Eliminar el carrito y los elementos
+        elementos.delete()
+        carrito.delete()
 
-    email = EmailMessage(
-        asunto,
-        mensaje_texto,
-        'only.flans@gmail.com',
-        [request.user.email],
-    )
+        # Mensaje de éxito
+        messages.success(request, '¡Hemos recibido su pedido! Esté atento a su correo.')
+    except Exception as e:
+        messages.error(request, f'Error al procesar el pedido: {str(e)}')
 
-    # Generar PDF adjunto
-    buffer = BytesIO()
-    pdf = SimpleDocTemplate(buffer, pagesize=letter)
-    elementos_tabla = []
-    
-    # Estilos para el PDF
-    estilos = getSampleStyleSheet()
-    estilo_titulo = ParagraphStyle(name='Titulo', fontSize=16, spaceAfter=20)
-    estilo_encabezado = ParagraphStyle(name='Encabezado', fontSize=12, spaceAfter=10)
-    estilo_texto = ParagraphStyle(name='Texto', fontSize=10, spaceAfter=5)
-    
-    # Agregar título al PDF
-    titulo = Paragraph('Confirmación de Pedido', estilo_titulo)
-    elementos_tabla.append(titulo)
-    
-    # Agregar detalles del pedido al PDF
-    detalles = Paragraph(f'Pedido realizado por: {request.user.username}', estilo_texto)
-    elementos_tabla.append(detalles)
-    
-    # Agregar tabla de productos al PDF
-    encabezados = ['Producto', 'Cantidad', 'Precio Unitario', 'Subtotal']
-    datos_tabla = [encabezados]
-    
-    total = 0
-    for elemento in elementos:
-        subtotal = elemento.producto.precio * elemento.cantidad
-        total += subtotal
-        fila = [elemento.producto.nombre, str(elemento.cantidad), str(elemento.producto.precio), str(subtotal)]
-        datos_tabla.append(fila)
-    
-    tabla = Table(data=datos_tabla)
-    tabla.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-        ('ALIGN', (0, 1), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('TOPPADDING', (0, 1), (-1, -1), 6),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ]))
-    
-    elementos_tabla.append(tabla)
-    
-    # Agregar total al PDF
-    total_texto = Paragraph(f'Total: {total}', estilo_texto)
-    elementos_tabla.append(total_texto)
-    
-    pdf.build(elementos_tabla)
-    buffer.seek(0)
-
-    email.attach('confirmacion_pedido.pdf', buffer.getvalue(), 'application/pdf')
-
-    email.send()
-'''
-
-    messages.success(request, f'{iconos["ok"]}\t¡Hemos recibido su pedido! Esté atento a su correo.')
-    carrito.delete()
     return redirect('/')
 
 def historial(request):

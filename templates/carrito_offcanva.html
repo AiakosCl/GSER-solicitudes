@@ -12,7 +12,7 @@
                 <h2>Detalle de tu solicitud</h2>
                 <div>
                     <hr>
-                    {% include 'includes/identificacion.html' %}
+                    {% include 'includes/id.html' %}
                     <hr>
                     Aquí, se encuentra el detalle de lo que has ido agregando. Revisa las cantidades y/o modifícalas si
                     lo deseas.
@@ -73,7 +73,11 @@
                 <a href="{% if carrito %}{% url vista %}#carrito{% else %}{% url 'inicio' %}#contenido{% endif %}"><button
                         type="button" class="btn btn-outline-primary btn-lg m-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Agregar otro artículo..."><i
                             class="fa-solid fa-cart-plus"></i></button></a>
-                {% if carrito %}<button type="button" class="btn btn-outline-success btn-lg m-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Hacer la solicitud..."><i class="fa-regular fa-thumbs-up"></i></button>{% endif %}
+                {% if carrito %}
+                <a href="{% url 'realizar_pedido' %}">
+                    <button type="button" class="btn btn-outline-success btn-lg m-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Hacer la solicitud..."><i class="fa-regular fa-thumbs-up"></i></button>
+                </a>
+                {% endif %}
             </div>
         </section>
     </div>

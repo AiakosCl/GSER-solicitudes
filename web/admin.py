@@ -31,13 +31,24 @@ class ServicioAdmin(admin.ModelAdmin):
 class ContactoAdmin(admin.ModelAdmin):
     list_display = ('ContactoId','usuario','tipo_contacto','area','emailcliente','telefono','mensaje' )
     list_filter = ('usuario','tipo_contacto','area','emailcliente','telefono','mensaje' )
-    search_fields = ('usuario','tipo_contacto','area','emailcliente','telefono','mensaje' ) 
+    search_fields = ('usuario','tipo_contacto','area','emailcliente','telefono','mensaje' )
+
+class CarritoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'usuario', 'area_servicio')
+
+class PedidoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'area_servicio','usuario','estado')
+
+class DetallePedidoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'pedido')
+    list_filter = ('pedido',)
+
 
 
 # Modelos que aparecerán en la consola de admin
 admin.site.register(MAE)
 admin.site.register(Usuario, UserAdmin)
-admin.site.register(Area)
+admin.site.register(Area, AreaAdmin)
 admin.site.register(Edificio)
 admin.site.register(Habitacion)
 admin.site.register(Gerencia, GerenciaAdmin)
@@ -47,3 +58,7 @@ admin.site.register(Servicio, ServicioAdmin)
 admin.site.register(AreaServicio, AreaServicioAdmin)
 admin.site.register(SalasCambio)
 admin.site.register(Contacto, ContactoAdmin)
+admin.site.register(Carrito, CarritoAdmin)
+admin.site.register(Pedido, PedidoAdmin)
+admin.site.register(DetallePedido, DetallePedidoAdmin)
+admin.site.register(ItemsCarrito)

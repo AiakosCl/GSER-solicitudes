@@ -30,7 +30,6 @@
                 <div id="Contendor-cabecera overlay">
                     <div>
                         <div class="text-white">
-                            <img src="{% static 'images/Logo2-transparent.png' %}" alt="" width="300px" class="d-none d-md-block">
                             {% if user.is_authenticated %}
                                 <div class="segunda">
                                     <span class="mb-3 text-light">
@@ -45,10 +44,7 @@
                                 </span>
                             </div>
                             <div class="tercera d-md-block">
-                                <span 
-                                class="text-light">
-                                División Andina
-                                </span>
+                                <img src="{% static 'images/LogoAndina.png' %}" width="300px" alt="">
                             </div>
                             <div class="tercera d-md-block">
                                 <a data-mdb-ripple-init class="btn btn-outline-light btn-lg m-2" href="{% url 'contacto' %}" role="button"
