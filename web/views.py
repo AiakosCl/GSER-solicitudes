@@ -8,9 +8,15 @@ from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.db import transaction
 from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.core.mail import send_mail, EmailMessage
+from django.conf import settings
+from datetime import datetime, date
+import pytz
 from web.models import *
 from web.forms import *
-from datetime import datetime
+
+
 # Create your views here.
 
 iconos = {
@@ -387,13 +393,15 @@ def realizar_pedido(request):
     if not elementos.exists(): #Verifica si el carro tiene elementos
         messages.error(request, f'{iconos["mal"]}\tNo tienes artículos en el carrito.')
         return redirect('/')
+    else:
+        detalle = "\n".join([f" - {elemento.producto} x {elemento.cantidad}" for elemento in elementos])
 
     try:
         with transaction.atomic():
             # Crear el pedido
             pedido = Pedido.objects.create(
                 usuario=request.user,
-                fecha_creacion = datetime.now(),
+                fecha_creacion = datetime.now(pytz.timezone('America/Santiago')),
                 area_servicio=carrito.area_servicio,  # Se obtiene el Id de servicio de la tabla Carrito
                 ceco=request.user.ceco_id,  # Asignar el CECO del usuario. Se obtiene de la Tabla Usuario
                 total=0,  # Inicialmente cero, se calculará más adelante
@@ -417,11 +425,64 @@ def realizar_pedido(request):
             # Asignar el total calculado al pedido
             pedido.total = total
             pedido.save()
+        
+        # Notificaciones
 
+        # Enviar correo de HTML
+
+        asunto = f'Solicitud de {carrito.area_servicio.nombre_area}: {pedido.id}'
+        destinatarios = [request.user.email,'rmuno009@codelco.cl','galva026@contratistas.codelco.cl']
+        
+        # Correo HTML
+        mensaje_html = render_to_string('confirmacion.html', {'pedido': pedido, 'usuario': request.user, 'elementos':elementos})
+        email = EmailMessage(
+            asunto,
+            mensaje_html,
+            settings.DEFAULT_FROM_EMAIL,
+            destinatarios,
+        )
+        email.content_subtype = 'html'
+        email.send()
+        
+        correo_texto = """
+        #Correo Texto
+        # mensaje = f'''
+        # Estimado(a) {request.user.first_name}:
+        
+        # Hemos registrado tu solicitud de {carrito.area_servicio.nombre_area}.
+
+        # Para tu conocimiento el proceso sería:
+
+        # Solicitud -> Recogida -> Revisión -> Confirmación -> Lavado -> Entrega
+        
+        # Detalle de tu solicitud:
+
+        # ID: {pedido.id}
+        # Fecha de solicitud: {pedido.fecha_creacion.strftime('%d-%m-%Y %H:%M')}
+        # Area de Servicio: {pedido.area_servicio.nombre_area}
+        # CECO: {pedido.ceco}
+
+        #     Artículos enviados:    
+        #     {detalle}
+
+        # Total: {pedido.total}
+
+
+        # Gracias por utilizar nuestros servicios.
+
+        
+        # Atentamente,
+        # Gestión de Servicios SSP
+
+        # **Esto es sólo una notificación automática. No responder a este correo.**
+        # '''
+        # send_mail(asunto, mensaje, settings.DEFAULT_FROM_EMAIL,destinatarios)
+"""
+        
         # Eliminar el carrito y los elementos
         elementos.delete()
         carrito.delete()
-
+        
         # Mensaje de éxito
         messages.success(request, '¡Hemos recibido su pedido! Esté atento a su correo.')
     except Exception as e:

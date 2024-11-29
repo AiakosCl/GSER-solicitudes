@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    * {
+        font-family: Arial, sans-serif;
+        margin:0;
+        padding:0;
+        border:0;
+        box-sizing: border-box;
+        vertical-align: baseline;
+    }
+
+    .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .titulo {
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .table {
+        border-collapse: separate;
+        border-spacing: 0 5px;
+        width: 80%;
+        text-align: center;
+        margin: 0 auto;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .table td {
+        padding: 5px;
+        border: none;
+        background-color: #fff;
+        color: #333;
+        border-bottom: 1px solid #ccc;
+        width: 20%;
+    }
+
+    .table tbody tr:nth-child(even){
+        background-color: #f2f2f2;  
+    }
+    
+    .indicador {
+        color: orange;
+    }
+
+    .icono{
+        font-size:48px;
+    }
+    
+
+</style>
+    <title>Confirmación</title>
+</head>
+<body>
+    <div class="container">
+        <h3>Estimado(a) {{usuario.first_name}}:</h3>
+        <br>
+        <div>
+            Esta es una notificación automática para confirmar que hemos registrado tu solicitud de <strong>{{pedido.area_servicio.nombre_area}}.</strong>
+        </div>
+        <br>
+        <div>
+            Cualquier cambio de estado de la misma será informada por este medio. Sin embargo, también podrás consultar el estado a través de la aplicación en <em>"Mis Solicitudes".</em>
+        </div>
+        <br>
+        <div class="container"><strong>Estado de la solicitud:</strong>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td class="icono">🗒️</td>
+                        <td class="icono">📦</td>
+                        <td class="icono">✔️</td>
+                        <td class="icono">🧼</td>
+                        <td class="icono">🫱🏼‍🫲🏼</td>                        
+                    </tr>
+                    <tr>
+                        <td>Solicitud</td>
+                        <td>Recolección</td>
+                        <td>Revisión</td>
+                        <td>En Proceso</td>
+                        <td>Entregado</td>
+                    </tr>
+
+                    <tr>
+                        <td style="background-color: greenyellow;"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <div class="container"><strong>Detalle de tu solicitud:</strong>
+            <table class="table" style="text-align:justify!important;">
+                <tbody>
+                    <tr>
+                        <td><Strong>id. Servicio</td>
+                        <td>{{pedido.id}}</td>
+                    </tr>
+                    <tr>
+                        <td><Strong>Fecha Solicitud</td>
+                        <td>{{pedido.fecha_creacion}}</td>
+                    </tr>
+                    <tr>
+                        <td><Strong>Tipo Servicio</td>
+                        <td>{{pedido.area_servicio.nombre_area}}</td>
+                    </tr>
+                    <tr>
+                        <td><Strong>CECO</td>
+                        <td>{{pedido.ceco}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        <br>
+        <strong>Lista de artículos:</strong>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td class="titulo">Cant.</td>
+                        <td class="titulo">Prenda</td>
+
+                    </tr>
+                    {% for elemento in elementos %}
+                    <tr>
+                        <td><em>{{elemento.cantidad}}</td>
+                        <td style="text-align:justify"><em>{{elemento.producto.nombre_servicio}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br><br>
+        <p>Gracias por utilizar nuestros servicios.</p>
+        <br><br><br>
+        <p>Atentamente,</p>
+        <p>Gestión de Servicios SSP</p>
+    
+    </div>
+</body>
+</html>
