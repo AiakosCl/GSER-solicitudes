@@ -43,6 +43,9 @@ class DetallePedidoAdmin(admin.ModelAdmin):
     list_display = ('id', 'pedido')
     list_filter = ('pedido',)
 
+class IconosBase64Admin(admin.ModelAdmin):
+    list_display = ('id', 'icono')
+    list_filter = ('icono',)
 
 
 # Modelos que aparecerán en la consola de admin
@@ -63,3 +66,4 @@ admin.site.register(Pedido, PedidoAdmin)
 admin.site.register(DetallePedido, DetallePedidoAdmin)
 admin.site.register(ItemsCarrito)
 admin.site.register(ContadorSolicitudes)
+admin.site.register(IconosBase64, IconosBase64Admin)

@@ -7,6 +7,15 @@ from django.utils import timezone
 import uuid
 
 
+# ---- Otros ----  #
+
+class IconosBase64(models.Model):
+    icono = models.CharField(max_length=100, null=False, blank=False)
+    icono_base64 = models.TextField(null=False, blank=False)
+
+    def __str__(self) -> str:
+        return self.icono
+
 # ---- Tabla de Perfiles y Usuarios ---- #
 
 

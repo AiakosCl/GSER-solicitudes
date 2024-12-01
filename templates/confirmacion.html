@@ -78,26 +78,26 @@
             <table class="table">
                 <tbody>
                     <tr>
-                        <td class="icono">🗒️</td>
-                        <td class="icono">📦</td>
-                        <td class="icono">✔️</td>
-                        <td class="icono">🧼</td>
-                        <td class="icono">🫱🏼‍🫲🏼</td>                        
+                        <td class="icono"><img src="{{iconos.solicitud}}" alt=""></td>
+                        <td class="icono"><img src="{{iconos.recepcion}}" alt=""></td>
+                        <td class="icono"><img src="{{iconos.revision}}" alt=""></td>
+                        <td class="icono"><img src="{{iconos.proceso}}" alt=""></td>
+                        <td class="icono"><img src="{{iconos.completo}}" alt=""></td>                        
                     </tr>
                     <tr>
                         <td>Solicitud</td>
-                        <td>Recolección</td>
+                        <td>Recepción</td>
                         <td>Revisión</td>
                         <td>En Proceso</td>
                         <td>Entregado</td>
                     </tr>
 
                     <tr>
-                        <td style="background-color: greenyellow;"></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td {% if avance >= 20 %} style="background-color: greenyellow;" {% endif %}>{{avance}}%</td>
+                        <td {% if avance > 20 or avance <= 40 %}style="background-color: greenyellow;"{% endif %}></td>
+                        <td {% if avance > 40 or avance <= 60 %}style="background-color: greenyellow;"{% endif %}></td>
+                        <td {% if avance > 60 or avance <= 80 %}style="background-color: greenyellow;"{% endif %}></td>
+                        <td {% if avance > 80 %}style="background-color: greenyellow;"{% endif %}></td>
                     </tr>
                 </tbody>
             </table>
@@ -135,7 +135,7 @@
                     </tr>
                     {% for elemento in elementos %}
                     <tr>
-                        <td><em>{{elemento.cantidad}}</td>
+                        <td style="text-align:end"><em>{{elemento.cantidad}}</td>
                         <td style="text-align:justify"><em>{{elemento.producto.nombre_servicio}}</td>
                     </tr>
                     {% endfor %}

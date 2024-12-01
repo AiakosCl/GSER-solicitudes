@@ -383,6 +383,16 @@ def filtrar_articulos(request):
 # Realizar el pedido
 @login_required
 def realizar_pedido(request):
+    # Obtiene los iconos
+
+    iconos = {
+        'solicitud': IconosBase64.objects.get(icono='solicitud').icono_base64,
+        'recepcion': IconosBase64.objects.get(icono='recepcion').icono_base64,
+        'revision': IconosBase64.objects.get(icono='revision').icono_base64,
+        'proceso': IconosBase64.objects.get(icono='proceso').icono_base64,
+        'completo': IconosBase64.objects.get(icono='completo').icono_base64,
+    }
+
     # Obtiene el carrito del usuario actual
     carrito = Carrito.objects.filter(usuario=request.user).first()
     if not carrito: #Verifica si existe un carrito
@@ -431,10 +441,11 @@ def realizar_pedido(request):
         # Enviar correo de HTML
 
         asunto = f'Solicitud de {carrito.area_servicio.nombre_area}: {pedido.id}'
-        destinatarios = [request.user.email,'rmuno009@codelco.cl','galva026@contratistas.codelco.cl']
+        destinatarios = [request.user.email,'rmuno009@codelco.cl','galva026@contratistas.codelco.cl','jarayagg@gmail.com']
         
         # Correo HTML
-        mensaje_html = render_to_string('confirmacion.html', {'pedido': pedido, 'usuario': request.user, 'elementos':elementos})
+        avance = 20
+        mensaje_html = render_to_string('confirmacion.html', {'pedido': pedido, 'usuario': request.user, 'elementos':elementos, 'avance':avance, 'iconos':iconos})
         email = EmailMessage(
             asunto,
             mensaje_html,
