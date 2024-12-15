@@ -10,7 +10,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="FormularioContacto" tabindex="-1" aria-labelledby="NuevoModalLabel"
-    aria-hidden="true" style="background-color: rgb(255, 255, 255,0.4);">
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -21,7 +21,7 @@
             <div class="modal-body">
                 <!-- formulario de contacto/sugerencia -->
                 <div class="container text-start py-2" style="width: 100%;">
-                    <h3 class="fw-bold">Hola, {{usuario.first_name}}:</h3><br>
+                    <h3 class="fw-bold text-light">Hola, {{usuario.first_name}}:</h3><br>
                     <div class="d-none d-md-block">Por favor, coméntanos el motivo de tu contacto, y te responderemos a
                         la brevedad posible.</div>
                 </div>
@@ -33,22 +33,19 @@
                         <input type="hidden" class="form-control" id="id_usuario" name="usuario"
                             placeholder="Su nombre" value={{usuario.id|default_if_none:''}}>
                     </div>
-                    <div class="text-danger">
-                        {{usuario.first_name.errors}}
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="id_NombreCliente" name="NombreCliente"
-                            placeholder="Su nombre" value={{usuario.first_name|default_if_none:''}}>
-                        <label for="id_NombreCliente" class="form-label">Tu nombre:</label>
-                        <div class="text-danger">
-                            <small>{{usuario.first_name.errors}}</small>
-                        </div>
-                    </div>
+
                     <table>
                         <tr>
                             <td>
                                 <div class="form-floating mb-3">
-                                    <input type="email" class="form-control" id="id_EmailCliente" name="emailcliente"
+                                    <input type="text" class="form-control" id="id_NombreCliente" name="NombreCliente" style="background-color: transparent; color:white; border: none; border-bottom: 1px solid;"
+                                        placeholder="Su nombre" value={{usuario.first_name|default_if_none:''}}>
+                                    <label for="id_NombreCliente" class="form-label">Tu nombre:</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control" id="id_EmailCliente" name="emailcliente" style="background-color: transparent; color:white; border: none; border-bottom: 1px solid;"
                                         placeholder="correo@electronico.com" value="{{usuario.email|default_if_none:''}}">
                                     <label for="id_EmailCliente" class="form-label">{{formulario.emailcliente.label|title}}</label>
                                     <div class="text-danger">
@@ -56,9 +53,12 @@
                                     </div>
                                 </div>
                             </td>
+                        </tr>
+                        <tr>
                             <td>
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="telefono" name="telefono" value="{{usuario.telefono|default_if_none:''}}">
+                                    <input type="text" class="form-control" id="telefono" name="telefono" style="background-color: transparent; color:white; border: none; border-bottom: 1px solid;"
+                                    value="{{usuario.telefono|default_if_none:''}}">
                                     <label for="telefono" class="form-label">{{formulario.telefono.label}}</label>
                                     <div class="text-danger">
                                         <small>{{formulario.telefono.errors}}</small>
@@ -67,35 +67,46 @@
                             </td>
                         </tr>
                     </table>
+                
                     <table>
                         <tr>
                             <td>
+                                <div class="form-floating">
+                                    <select name="area" id="selector_area" class="form-select" style="background-color: transparent; color:white; border: none; border-bottom: 1px solid;">
+                                        {% for area in areas %}
+                                        <option value="{{area.id}}" style="color:black;">{{area.nombre_area}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="selector_area">Servicio relacionado:</label>
+                                </div>
+                            </td>
+                            <td rowspan="2">
                                 <div class="mb-3">
-                                    <div class="form-check form-check-inline">
+                                    <div class="form-check form-check-reverse">
                                         <input class="form-check-input" type="radio" name="tipo_contacto" id="flexRadioDefault1" value="consulta" checked>
                                         <label class="form-check-label" for="flexRadioDefault1">
                                             Consulta
                                         </label>
                                     </div>
-                                    <div class="form-check form-check-inline">
+                                    <div class="form-check form-check-reverse">
                                         <input class="form-check-input" type="radio" name="tipo_contacto" id="flexRadioDefault2" value="felicitacion">
                                         <label class="form-check-label" for="flexRadioDefault2">
                                             Felicitación
                                         </label>
                                     </div>
-                                    <div class="form-check form-check-inline">
+                                    <div class="form-check form-check-reverse">
                                         <input class="form-check-input" type="radio" name="tipo_contacto" id="flexRadioDefault3" value="sugerencia">
                                         <label class="form-check-label" for="flexRadioDefault3">
                                             Sugerencia
                                         </label>
                                     </div>
-                                    <div class="form-check form-check-inline">
+                                    <div class="form-check form-check-reverse">
                                         <input class="form-check-input" type="radio" name="tipo_contacto" id="flexRadioDefault4" value="reclamo">
                                         <label class="form-check-label" for="flexRadioDefault4">
-                                            Reclamo
+                                            Op. de mejora
                                         </label>
                                     </div>
-                                    <div class="form-check form-check-inline">
+                                    <div class="form-check form-check-reverse">
                                         <input class="form-check-input" type="radio" name="tipo_contacto" id="flexRadioDefault5" value="otro">
                                         <label class="form-check-label" for="flexRadioDefault5">
                                             Otros
@@ -103,28 +114,19 @@
                                     </div>
                                 </div>
                             </td>
-                            <tr>
-                                <td>
-                                    <div class="form-floating">
-                                        <select name="area" id="selector_area" class="form-select">
-                                            {% for area in areas %}
-                                            <option value="{{area.id}}">{{area.nombre_area}}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <label for="selector_area">Servicio relacionado:</label>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-floating mb-3">
+                                    <textarea class="form-control" id="id_Mensaje" name="mensaje" rows="10" style="min-height: 10em;background-color: transparent; color:white; border: none; border-bottom: 1px solid;"></textarea>
+                                    <label for="id_Mensaje" class="form-label">Coméntanos:</label>
+                                    <div class="text-danger">
+                                        <small>{{formulario.mensaje.errors}}</small>
                                     </div>
-                                </td>
-                            </tr>
+                                </div>
+                            </td>
                         </tr>
                     </table>
-                    <div class="form-floating mb-3">
-                        <textarea class="form-control" id="id_Mensaje" name="mensaje" rows="3"></textarea>
-                        <label for="id_Mensaje" class="form-label">Coméntanos:</label>
-                        <div class="text-danger">
-                            <small>{{formulario.mensaje.errors}}</small>
-                        </div>
-                    </div>
-
                     <div class="my-3 text-end">
                         <button type="submit" class="btn btn-outline-light btn-lg m-2" href="#contenido">Enviar</button>
                     </div>

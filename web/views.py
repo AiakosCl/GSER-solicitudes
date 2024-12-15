@@ -411,7 +411,7 @@ def realizar_pedido(request):
             # Crear el pedido
             pedido = Pedido.objects.create(
                 usuario=request.user,
-                fecha_creacion = datetime.now(pytz.timezone('America/Santiago')),
+                fecha_creacion = datetime.now(pytz.timezone('America/Santiago')), # Se obtiene la fecha y hora actual y localiza la zona horaria de Chile
                 area_servicio=carrito.area_servicio,  # Se obtiene el Id de servicio de la tabla Carrito
                 ceco=request.user.ceco_id,  # Asignar el CECO del usuario. Se obtiene de la Tabla Usuario
                 total=0,  # Inicialmente cero, se calculará más adelante
@@ -441,7 +441,7 @@ def realizar_pedido(request):
         # Enviar correo de HTML
 
         asunto = f'Solicitud de {carrito.area_servicio.nombre_area}: {pedido.id}'
-        destinatarios = [request.user.email,'rmuno009@codelco.cl','galva026@contratistas.codelco.cl','jarayagg@gmail.com']
+        destinatarios = [request.user.email,'galva026@contratistas.codelco.cl']
         
         # Correo HTML
         avance = 20
@@ -496,7 +496,7 @@ def realizar_pedido(request):
         
         # Mensaje de éxito
         messages.success(request, '¡Hemos recibido su pedido! Esté atento a su correo.')
-    except Exception as e:
+    except Exception as e: #Si hubiera algún error...
         messages.error(request, f'Error al procesar el pedido: {str(e)}')
 
     return redirect('/')
