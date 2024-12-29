@@ -9,10 +9,9 @@ html {
     -webkit-transform: translate3d(0, 0, 0);
 } */
 
-.navbar img, header img {
-    filter:drop-shadow(
-        0 0 10px rgb(0,0,0)
-    );
+.navbar img,
+header img {
+    filter: drop-shadow(0 0 10px rgb(0, 0, 0));
     mix-blend-mode: multiply;
 }
 
@@ -31,8 +30,8 @@ html {
 }
 
 /* Navbar transparente cuando está dentro del header */
-.navbar{
-    background-color: rgba(255, 255, 255,0);
+.navbar {
+    background-color: rgba(255, 255, 255, 0);
     backdrop-filter: blur(0px);
     transition: background-color 0.5s ease, color 0.5s ease;
 }
@@ -154,8 +153,10 @@ html {
 }
 
 @keyframes showup {
-    0% {opacity: 0;
+    0% {
+        opacity: 0;
     }
+
     20% {
         opacity: 1;
     }
@@ -241,7 +242,7 @@ html {
 .modal-content {
     display: flex;
     flex-direction: column;
-    background-color: rgba(0,0,0, 0.3) !important;
+    background-color: rgba(0, 0, 0, 0.3) !important;
     color: white !important;
     border-radius: 0px 40px 0px 40px;
     border: 1px solid rgba(236, 125, 6, 0.432);
@@ -264,7 +265,7 @@ html {
 .properties-box {
     display: flex;
     flex-flow: row wrap;
-    justify-content:space-between;
+    justify-content: space-between;
     align-items: center;
     margin: 0 auto;
 
@@ -393,7 +394,7 @@ html {
     bottom: -5px;
     width: 0;
     height: 2px;
-    background-color:#f35525;
+    background-color: #f35525;
     transition: 0.3s ease;
 }
 
@@ -453,20 +454,19 @@ html {
 
 /* Estilo para Tabla ID */
 
-.tabla_id {	
+.tabla_id {
     display: grid;
     grid-template-columns: 30% 1fr;
     grid-template-rows: auto;
     grid-gap: 5px;
-    width:100%;
-    margin:clamp(10px, 5%, 1280px) auto;
-    font-size:clamp(12px, 2rem, 48px);
+    width: 100%;
+    margin: clamp(10px, 5%, 1280px) auto;
+    font-size: clamp(12px, 2rem, 48px);
 }
 
-.celdas {	
-    background-color: white; 
-    color:black;
->>>>>>> d8d3176cd12683cdbda0c9a60f942b61aa33d66a
+.celdas {
+    background-color: white;
+    color: black;
     border-radius: 10px;
     padding: 20px;
     text-align: center;

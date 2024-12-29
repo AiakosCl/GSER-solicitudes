@@ -47,13 +47,15 @@
                                     </h5>
                                     <p class="card-text"><small>{{servicio.descripcion_servicio}}</small></p>
                                 </div>
+                                {% if servicio.area_servicio == 1 %}
                                 <div class="card-footer text-end me-auto">
                                     <p class="fs-5 fw-bold">Costo: CLP {{servicio.precio_servicio}}</p>
                                 </div>
+                                {% endif %}
                                 <div class="card-footer text-end me-auto">
                                     {% if user.is_staff %}
-                                    <a href="#"><button type="button" class="btn btn-outline-primary btn-lg m-2"
-                                            data-bs-dismiss="modal"><i class="fa-solid fa-pen-to-square fs-3"></i></button></a>
+                                    <a href="/admin/web/servicio/{{servicio.id}}/change/" target="_blank"><button type="button" class="btn btn-outline-primary btn-lg m-2"
+                                            data-bs-dismiss="modal" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Editar Producto..."><i class="fa-solid fa-pen-to-square fs-3"></i></button></a>
                                     {% endif %}
                                     <a href="{% url 'agregar_al_carrito' servicio.id %}#carrito">
                                         <button type="button" class="btn btn-outline-success btn-lg m-2"
