@@ -444,7 +444,7 @@ def realizar_pedido(request):
         destinatarios = [request.user.email,'galva026@contratistas.codelco.cl']
         
         # Correo HTML
-        avance = 20
+        avance = 100
         mensaje_html = render_to_string('confirmacion.html', {'pedido': pedido, 'usuario': request.user, 'elementos':elementos, 'avance':avance, 'iconos':iconos})
         email = EmailMessage(
             asunto,
@@ -607,6 +607,11 @@ def lavanderia(request):
     
     return render(request, 'lavanderia.html', {'servicios':productos, 'vista':vista, 'locker':locker})
 
+def recoger_lavanderia(request): #En este punto se hará una rutina que muestre una lista de todos los pedidos de lavanderia qué estén en estado pendiente
+    pedidos = Pedido.objects.filter(area_servicio = 4, estado='pendiente')
+    
+    return render(request, 'recoger_lavanderia.html')
+
 @login_required
 def mantencion(request):
     return render(request, 'mantencion.html')
@@ -614,3 +619,6 @@ def mantencion(request):
 @login_required
 def transporte(request):
     return render(request, 'transporte.html')
+
+
+

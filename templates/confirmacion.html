@@ -94,10 +94,10 @@
 
                     <tr>
                         <td {% if avance >= 20 %} style="background-color: greenyellow;" {% endif %}>{{avance}}%</td>
-                        <td {% if avance > 20 or avance <= 40 %}style="background-color: greenyellow;"{% endif %}></td>
-                        <td {% if avance > 40 or avance <= 60 %}style="background-color: greenyellow;"{% endif %}></td>
-                        <td {% if avance > 60 or avance <= 80 %}style="background-color: greenyellow;"{% endif %}></td>
-                        <td {% if avance > 80 %}style="background-color: greenyellow;"{% endif %}></td>
+                        <td {% if avance >= 40 %}style="background-color: greenyellow;"{% endif %}></td>
+                        <td {% if avance >= 60 %}style="background-color: greenyellow;"{% endif %}></td>
+                        <td {% if avance >= 80 %}style="background-color: greenyellow;"{% endif %}></td>
+                        <td {% if avance == 100 %}style="background-color: greenyellow;"{% endif %}></td>
                     </tr>
                 </tbody>
             </table>
