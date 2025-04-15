@@ -442,10 +442,16 @@ def realizar_pedido(request):
 
         asunto = f'Solicitud de {carrito.area_servicio.nombre_area}: {pedido.id}'
         destinatarios = [request.user.email,'galva026@contratistas.codelco.cl']
+
+        cuerpo = {
+            'linea1': f"Esta es una notificación automática para confirmar que hemos registrado tu solicitud de {carrito.area_servicio.nombre_area.upper()}.",
+            'linea2': "Cualquier cambio de estado de la misma será informada por este medio. Sin embargo, tambien podrás consultar el estado a través de la aplicación en 'Mis Solicitudes'.",
+
+        }
         
         # Correo HTML
-        avance = 100
-        mensaje_html = render_to_string('confirmacion.html', {'pedido': pedido, 'usuario': request.user, 'elementos':elementos, 'avance':avance, 'iconos':iconos})
+        avance = 20
+        mensaje_html = render_to_string('confirmacion.html', {'pedido': pedido, 'usuario': request.user, 'elementos':elementos, 'avance':avance, 'iconos':iconos,'contenido':cuerpo})
         email = EmailMessage(
             asunto,
             mensaje_html,

@@ -67,16 +67,17 @@
         <h3>Estimado(a) {{usuario.first_name}}:</h3>
         <br>
         <div>
-            Esta es una notificación automática para confirmar que hemos registrado tu solicitud de <strong>{{pedido.area_servicio.nombre_area}}.</strong>
+            {{contenido.linea1}}
         </div>
         <br>
         <div>
-            Cualquier cambio de estado de la misma será informada por este medio. Sin embargo, también podrás consultar el estado a través de la aplicación en <em>"Mis Solicitudes".</em>
+            {{contenido.linea2}}
         </div>
         <br>
         <div class="container"><strong>Estado de la solicitud:</strong>
             <table class="table">
                 <tbody>
+                    <!-- Iconos -->
                     <tr>
                         <td class="icono"><img src="{{iconos.solicitud}}" alt=""></td>
                         <td class="icono"><img src="{{iconos.recepcion}}" alt=""></td>
@@ -84,6 +85,7 @@
                         <td class="icono"><img src="{{iconos.proceso}}" alt=""></td>
                         <td class="icono"><img src="{{iconos.completo}}" alt=""></td>                        
                     </tr>
+                    <!-- Títulos -->
                     <tr>
                         <td>Solicitud</td>
                         <td>Recepción</td>
@@ -91,13 +93,13 @@
                         <td>En Proceso</td>
                         <td>Entregado</td>
                     </tr>
-
+                    <!-- Barra de progreso -->
                     <tr>
-                        <td {% if avance >= 20 %} style="background-color: greenyellow;" {% endif %}>{{avance}}%</td>
-                        <td {% if avance >= 40 %}style="background-color: greenyellow;"{% endif %}></td>
-                        <td {% if avance >= 60 %}style="background-color: greenyellow;"{% endif %}></td>
-                        <td {% if avance >= 80 %}style="background-color: greenyellow;"{% endif %}></td>
-                        <td {% if avance == 100 %}style="background-color: greenyellow;"{% endif %}></td>
+                        <td {% if avance >= 20 %} style="background-color: #13b9b6;" {% endif %}></td>
+                        <td {% if avance >= 40 %}style="background-color: #13b9b6;"{% endif %}></td>
+                        <td {% if avance >= 60 %}style="background-color: #13b9b6;"{% endif %}>{{avance}}%</td>
+                        <td {% if avance >= 80 %}style="background-color: #13b9b6;"{% endif %}></td>
+                        <td {% if avance == 100 %}style="background-color: #13b9b6;"{% endif %}></td>
                     </tr>
                 </tbody>
             </table>
@@ -126,7 +128,7 @@
             </table>
         <br>
         <strong>Lista de artículos:</strong>
-            <table class="table">
+            <table class="table" style="max-width: 50%;">
                 <tbody>
                     <tr>
                         <td class="titulo">Cant.</td>
