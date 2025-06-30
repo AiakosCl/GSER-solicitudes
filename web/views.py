@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q, Sum
+from django.utils.encoding import force_str
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -383,7 +384,12 @@ def filtrar_articulos(request):
 # Realizar el pedido
 @login_required
 def realizar_pedido(request):
-    # Obtiene los iconos
+
+    def safe_utf8(value):
+        try:
+            return str(value).encode('utf-8').decode('utf-8')
+        except UnicodeEncodeError:
+            return str(value).encode('utf-8', errors='replace').decode('utf-8')
 
     iconos = {
         'solicitud': IconosBase64.objects.get(icono='solicitud').icono_base64,
@@ -393,38 +399,36 @@ def realizar_pedido(request):
         'completo': IconosBase64.objects.get(icono='completo').icono_base64,
     }
 
-    # Obtiene el carrito del usuario actual
     carrito = Carrito.objects.filter(usuario=request.user).first()
-    if not carrito: #Verifica si existe un carrito
+    if not carrito:
         messages.error(request, f'{iconos["mal"]}\tNo existe carrito relacionado a este Usuario')
         return redirect('/')
 
     elementos = ItemsCarrito.objects.filter(carrito=carrito)
-    if not elementos.exists(): #Verifica si el carro tiene elementos
+    if not elementos.exists():
         messages.error(request, f'{iconos["mal"]}\tNo tienes artículos en el carrito.')
         return redirect('/')
     else:
-        detalle = "\n".join([f" - {elemento.producto} x {elemento.cantidad}" for elemento in elementos])
+        detalle = "\n".join([
+            safe_utf8(f" - {elemento.producto} x {elemento.cantidad}")
+            for elemento in elementos
+        ])
 
     try:
         with transaction.atomic():
-            # Crear el pedido
             pedido = Pedido.objects.create(
                 usuario=request.user,
-                fecha_creacion = datetime.now(pytz.timezone('America/Santiago')), # Se obtiene la fecha y hora actual y localiza la zona horaria de Chile
-                area_servicio=carrito.area_servicio,  # Se obtiene el Id de servicio de la tabla Carrito
-                ceco=request.user.ceco_id,  # Asignar el CECO del usuario. Se obtiene de la Tabla Usuario
-                total=0,  # Inicialmente cero, se calculará más adelante
+                fecha_creacion=datetime.now(pytz.timezone('America/Santiago')),
+                area_servicio=carrito.area_servicio,
+                ceco=request.user.ceco_id,
+                total=0,
             )
 
             total = 0
-
-            # Iterar sobre los elementos del carrito
             for elemento in elementos:
-                subtotal = (elemento.producto.precio_servicio if elemento.producto.precio_servicio else 0) * elemento.cantidad
+                subtotal = (elemento.producto.precio_servicio or 0) * elemento.cantidad
                 total += subtotal
 
-                # Crear detalle del pedido
                 DetallePedido.objects.create(
                     pedido=pedido,
                     producto=elemento.producto,
@@ -432,26 +436,33 @@ def realizar_pedido(request):
                     precio=elemento.producto.precio_servicio
                 )
 
-            # Asignar el total calculado al pedido
             pedido.total = total
             pedido.save()
-        
+
         # Notificaciones
+        asunto = safe_utf8(f'Solicitud de {carrito.area_servicio.nombre_area}: {pedido.id}')
+        destinatarios = [request.user.email, 'galva026@contratistas.codelco.cl']
 
-        # Enviar correo de HTML
-
-        asunto = f'Solicitud de {carrito.area_servicio.nombre_area}: {pedido.id}'
-        destinatarios = [request.user.email,'galva026@contratistas.codelco.cl']
-
-        cuerpo = {
-            'linea1': f"Esta es una notificación automática para confirmar que hemos registrado tu solicitud de {carrito.area_servicio.nombre_area.upper()}.",
-            'linea2': "Cualquier cambio de estado de la misma será informada por este medio. Sin embargo, tambien podrás consultar el estado a través de la aplicación en 'Mis Solicitudes'.",
-
+        contenido = {
+            'linea1': safe_utf8(
+                f"Esta es una notificación automática para confirmar que hemos registrado tu solicitud de {carrito.area_servicio.nombre_area.upper()}."
+            ),
+            'linea2': safe_utf8(
+                "Cualquier cambio de estado de la misma será informada por este medio. Sin embargo, también podrás consultar el estado a través de la aplicación en 'Mis Solicitudes'."
+            ),
         }
-        
-        # Correo HTML
+
         avance = 20
-        mensaje_html = render_to_string('confirmacion.html', {'pedido': pedido, 'usuario': request.user, 'elementos':elementos, 'avance':avance, 'iconos':iconos,'contenido':cuerpo})
+        mensaje_html = render_to_string('confirmacion.html', {
+            'pedido': pedido,
+            'usuario': request.user,
+            'elementos': elementos,
+            'avance': avance,
+            'iconos': iconos,
+            'contenido': contenido,
+        })
+        mensaje_html = mensaje_html.encode('utf-8', errors='replace').decode('utf-8')
+
         email = EmailMessage(
             asunto,
             mensaje_html,
@@ -460,50 +471,18 @@ def realizar_pedido(request):
         )
         email.content_subtype = 'html'
         email.send()
-        
-        correo_texto = """
-        #Correo Texto
-        # mensaje = f'''
-        # Estimado(a) {request.user.first_name}:
-        
-        # Hemos registrado tu solicitud de {carrito.area_servicio.nombre_area}.
 
-        # Para tu conocimiento el proceso sería:
-
-        # Solicitud -> Recogida -> Revisión -> Confirmación -> Lavado -> Entrega
-        
-        # Detalle de tu solicitud:
-
-        # ID: {pedido.id}
-        # Fecha de solicitud: {pedido.fecha_creacion.strftime('%d-%m-%Y %H:%M')}
-        # Area de Servicio: {pedido.area_servicio.nombre_area}
-        # CECO: {pedido.ceco}
-
-        #     Artículos enviados:    
-        #     {detalle}
-
-        # Total: {pedido.total}
-
-
-        # Gracias por utilizar nuestros servicios.
-
-        
-        # Atentamente,
-        # Gestión de Servicios SSP
-
-        # **Esto es sólo una notificación automática. No responder a este correo.**
-        # '''
-        # send_mail(asunto, mensaje, settings.DEFAULT_FROM_EMAIL,destinatarios)
-"""
-        
-        # Eliminar el carrito y los elementos
         elementos.delete()
         carrito.delete()
-        
-        # Mensaje de éxito
+
         messages.success(request, '¡Hemos recibido su pedido! Esté atento a su correo.')
-    except Exception as e: #Si hubiera algún error...
-        messages.error(request, f'Error al procesar el pedido: {str(e)}')
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        messages.error(
+            request,
+            f"Error al procesar el pedido: {str(e).encode('utf-8', errors='replace').decode('utf-8')}"
+        )
 
     return redirect('/')
 
